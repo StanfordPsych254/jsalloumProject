@@ -1,0 +1,6 @@
+---
+title: "Replication Project Writeup"
+author: "Justin Salloum"
+date: "January 17, 2016"
+output: html_document
+---
