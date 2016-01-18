@@ -1,6 +1,22 @@
----
-title: "Replication Project Writeup"
-author: "Justin Salloum"
-date: "January 17, 2016"
-output: html_document
----
+## Proposal for Replication Project (James et al., 2015)
+
+### Justification
+
+For my project I chose to replicate experiment 2 from the study Computer Game Play Reduces Intrusive Memories of Experimental Trauma via Reconsolidation-Update Mechanisms (James et al., 2015). This experiment investigates the effect of memory reactivation and playing Tetris - following exposure to experimental trauma - on recurrence of intrusive memories. I chose this study because I'm intrigued by the effects of cognitive stimulation in the form of electronic games on the brain, and in particular I am a huge Tetris fan. Since I have experience with JavaScript and web development, I am excited to take on the challenges of presenting all of the stimuli for this experiment online.
+
+### Stimuli and Procedures
+
+Participants will be exposed to the following stimuli/take on the following tasks during the course of the study:
+
+* Trauma film: 12 minutes of traumatic content from 11 different scenes
+* Memory-reactivation task: a presentation of still film images during which participants recorded intrusive memories, followed by a standardized filler task
+* Tetris: the Tetris arcade game
+* Intrusion diary: for participants to record intrusive memories of the film content
+* Intrustion-provocation task: 11 blurred static visual images, following which participants recorded intrusive memories
+* Recognition memory tests: 32 true/false statements related to the 11 scenes in the trauma film
+
+Participants undergo the procedure for day 0 as described in the paper - signing an online consent form, watching the trauma film, recording feelings using Likert scales, and recording intrusive memories in their intrusion diary, which will be maintained online such that participants can revisit them as needed. Next is the procedure for day 1 - each participant will be in one of four groups: control, reactivation-only, tetris-only, reactivation plus tetris. The reactivation task and tetris game will both be embedded on the website. The participants "keep their diary" for 7 days, which takes the form of them being able to log in and log out of their experiment to write in it. Finally, the participants complete the day 7 tasks, which are presented as electronic surveys.
+
+### Challenges
+
+The initial challenge is successfully sourcing all the content necessary to carry out this experiment. Aggregating all of the tasks and stimuli into a cohesive and logical web format will also be very challenging, as certain content (such as the Tetris game and trauma video) need to be either linked or embedded. Additionally, some sort of login token or credentials will have to be created for each participant so that he can successfully return to the experiment as needed, for instance to update his online intrusion diary.
