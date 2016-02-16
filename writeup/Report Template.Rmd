@@ -1,0 +1,52 @@
+# REPORT TEMPLATE
+
+
+### Replication of The Sound of Power: Conveying and Detecting Hierarchical Rank Through Voice by Ko et al. (2015, Psychological Science)
+
+Justin Salloum
+
+jsalloum@stanford.edu
+
+
+## Introduction
+
+The present study replicates Experiment 2 from the original research, which assesses whether perceivers use speakers' hierarchy-induced acoustic cues to make hierarchical inferences about speakers. The researchers found that "perceivers used higher pitch, greater loudness, and greater loudness variability to make accurate inferences of speakers' hierarchical rank, demonstrating that acoustic cues are systematically used to detect hierarchy." Of particular interest is the result that "speakers who had been in the high-rank condition — regardless of their sex — were rated as more likely to engage in high-rank behaviors than were those in the low-rank condition."
+
+
+##Methods
+
+### Power Analysis
+
+Original effect size = 0.36. To detect an effect size of 0.36, the following samples sizes are needed to achieve various power:
+	
+Power |Sample Size Needed
+------|-------------------
+0.8   | 63
+0.9   | 83
+0.95  | 102
+
+All of these sample sizes are reasonable, for the purposes of financial feasibility a smaller sample size will be used.
+
+### Planned Sample
+
+Sixty-three undergraduates will be randomly selected for the sample, without restriction on age, gender or demographics.
+
+### Materials
+
+Recording of speakers saying aloud the Negotiation Passage: "I'm glad that we are able to meet today and I am looking forward to our negotiation. I know that you and I have different perspectives on some of the key issues and that these differences would need to be resolved for us to come to an agreement."
+
+The following items are used to measure hierarchy-based behavioral influences:
+![alt text](Table5.png)
+
+### Procedure
+
+"Each perceiver listened to a subset of recordings of the Negotiation Passage from Experiment 1 (30 female and 30 male voices). After each recording, perceivers rated the speaker on 12 hierarchy-based behaviors plausible in a negotiation context, using a scale from 1 (not at all) to 7  (very much). Six of these behaviors were associated with high rank, and six with low rank. The order of the speakers and the order of the behaviors were randomized for each perceiver. The low-rank behaviors were reverse-scored, and then scores for all 12 behaviors were averaged to create one composite hierarchical-inference score per perceiver per speaker (α = .92). After rating all the speakers, the perceivers listened to the voices a second time, in random order, and judged whether each speaker had been in a high- or low-rank role."
+	The original procedure is followed exactly, with the exception that Experiment 1 isn't actually carried out - it is just used as a reference in the original research to obtain the recordings of the speakers.
+
+### Analysis Plan
+The data will be analyzed with the same approach as in the original research. Effect of condition on hierarchy-based behavioral inferences:
+"We examined the extent to which perceivers' hierarchical inferences were consistent with the speakers' hierarchical rank using a 2 (speaker's condition: high rank, low rank) × 2 (speaker's sex: male, female) analysis of variance."
+Like in the original research, the current research will look for a main effect of speaker's condition, as well as main effect of speaker sex and interaction effects between speaker condition and sex.
+
+### Differences from Original Study
+Apart from the small sample size increase, the only difference between the current study and the original study is the setting. The current study will be entirely online and distributed via Amazon Mechanical Turk.
