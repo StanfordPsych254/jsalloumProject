@@ -17,15 +17,27 @@ The present study replicates Experiment 2 from the original research, which asse
 
 ### Power Analysis
 
-Original effect size = 0.36. To detect an effect size of 0.36, the following samples sizes are needed to achieve various power:
+Original effect size \(\eta^2\) = 0.603, \(f^2\) = 0.572. The effect size was determined using the F-statistic and the between- and within-subject degrees of freedom.
+
+\(df_1 = 1\)
+
+\(df_2 = 55\)
+
+\(F(1, 55) = 83.67\)
+
+\(\eta^2 = \frac{df_1F}{df_1F + df_2} = 0.603\)
+
+\(f^2 = \frac{\eta^2}{1 - \eta^2} = 0.572\)
+
+Power analysis was done using the software G*Power. To detect an effect size of 0.603, the following samples sizes are needed to achieve various power:
 	
 Power |Sample Size Needed
 ------|-------------------
-0.8   | 63
-0.9   | 83
-0.95  | 102
+0.8   | 17
+0.9   | 21
+0.95  | 25
 
-All of these sample sizes are reasonable, for the purposes of financial feasibility a smaller sample size will be used.
+All of these sample sizes are reasonable and financially feasible.
 
 ### Planned Sample
 

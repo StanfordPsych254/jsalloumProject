@@ -76,7 +76,13 @@ img {
 <h2>Methods</h2>
 <div id="power-analysis" class="section level3">
 <h3>Power Analysis</h3>
-<p>Original effect size = 0.36. To detect an effect size of 0.36, the following samples sizes are needed to achieve various power:</p>
+<p>Original effect size <span class="math inline">\(\eta^2\)</span> = 0.603, <span class="math inline">\(f^2\)</span> = 0.572. The effect size was determined using the F-statistic and the between- and within-subject degrees of freedom.</p>
+<p><span class="math inline">\(df_1 = 1\)</span></p>
+<p><span class="math inline">\(df_2 = 55\)</span></p>
+<p><span class="math inline">\(F(1, 55) = 83.67\)</span></p>
+<p><span class="math inline">\(\eta^2 = \frac{df_1F}{df_1F + df_2} = 0.603\)</span></p>
+<p><span class="math inline">\(f^2 = \frac{\eta^2}{1 - \eta^2} = 0.572\)</span></p>
+<p>Power analysis was done using the software G*Power. To detect an effect size of 0.603, the following samples sizes are needed to achieve various power:</p>
 <table>
 <thead>
 <tr class="header">
@@ -87,19 +93,19 @@ img {
 <tbody>
 <tr class="odd">
 <td align="left">0.8</td>
-<td align="left">63</td>
+<td align="left">17</td>
 </tr>
 <tr class="even">
 <td align="left">0.9</td>
-<td align="left">83</td>
+<td align="left">21</td>
 </tr>
 <tr class="odd">
 <td align="left">0.95</td>
-<td align="left">102</td>
+<td align="left">25</td>
 </tr>
 </tbody>
 </table>
-<p>All of these sample sizes are reasonable, for the purposes of financial feasibility a smaller sample size will be used.</p>
+<p>All of these sample sizes are reasonable and financially feasible.</p>
 </div>
 <div id="planned-sample" class="section level3">
 <h3>Planned Sample</h3>
