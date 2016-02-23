@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Project</title>
+    <!-- inject:vendor:css -->
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/css/app.css">
+    <!-- endinject -->
+  </head>
+  <body ng-controller="AppController">
+    <h1>Speaker # {{ speakerNumber }}</h1>
+    <form class="questionForm" ng-submit="submit()">
+        <div class="labels">
+            <div class="scale-item" ng-repeat="item in scale">
+                <p>{{ item.anchor }} </p>
+                <p>{{ item.index }}</p>
+            </div>
+        </div>
+        <div class="questions">
+            <div class="question" ng-repeat="question in questionGroups[questionGroup]">
+                <div class="question-text">
+                    <p>{{ question.question }}</p>
+                </div>
+                <div class="scale">
+                    <div class="scale-item" ng-repeat="item in scale">
+                        <input type="radio" name="scale{{ $parent.$index }}" ng-model="question.score" ng-value="item.index" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="submit" ng-value="questionGroup === questionGroups.length - 1 ? 'Next speaker' : 'Next'">
+    </form>
+    <!-- inject:vendor:js -->
+    <script src="/angular/angular.min.js"></script>
+    <script src="/lodash/dist/lodash.min.js"></script>
+    <!-- endinject -->
+    <!-- inject:js -->
+    <script src="/app.js"></script>
+    <script src="/assets/projectInfo.js"></script>
+    <script src="/replication-project-templates.js"></script>
+    <!-- endinject -->
+  </body>
+</html>
