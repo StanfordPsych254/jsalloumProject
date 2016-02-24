@@ -11,34 +11,16 @@
     <!-- endinject -->
   </head>
   <body ng-controller="AppController">
-    <h1>Speaker # {{ speakerNumber }}</h1>
-    <form class="questionForm" ng-submit="submit()">
-        <div class="labels">
-            <div class="scale-item" ng-repeat="item in scale">
-                <p>{{ item.anchor }} </p>
-                <p>{{ item.index }}</p>
-            </div>
-        </div>
-        <div class="questions">
-            <div class="question" ng-repeat="question in questionGroups[questionGroup]">
-                <div class="question-text">
-                    <p>{{ question.question }}</p>
-                </div>
-                <div class="scale">
-                    <div class="scale-item" ng-repeat="item in scale">
-                        <input type="radio" name="scale{{ $parent.$index }}" ng-model="question.score" ng-value="item.index" required>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <input type="submit" ng-value="questionGroup === questionGroups.length - 1 ? 'Next speaker' : 'Next'">
-    </form>
+    <instructions ng-if="active.instructions"></instructions>
+    <project-form ng-if="active.form"></project-form>
     <!-- inject:vendor:js -->
     <script src="/angular/angular.min.js"></script>
     <script src="/lodash/dist/lodash.min.js"></script>
     <!-- endinject -->
     <!-- inject:js -->
     <script src="/app.js"></script>
+    <script src="/instructions/instructions.js"></script>
+    <script src="/form/form.js"></script>
     <script src="/assets/projectInfo.js"></script>
     <script src="/replication-project-templates.js"></script>
     <!-- endinject -->

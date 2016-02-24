@@ -1,0 +1,29 @@
+$left-width: 300px;
+
+.form-wrapper {
+  width: 786px;
+  margin: auto;
+}
+
+.labels {
+  text-align: right;
+}
+
+.question {
+  margin-bottom: 30px;
+
+  .question-text {
+    width: 300px;
+    display: inline-block;
+  }
+
+  .scale {
+    float: right;
+  }
+}
+
+.scale-item {
+  width: 50px;
+  display: inline-block;
+  text-align: center;
+}
