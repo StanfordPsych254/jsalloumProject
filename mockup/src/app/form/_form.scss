@@ -1,8 +1,19 @@
-$left-width: 300px;
-
 .form-wrapper {
   width: 786px;
-  margin: auto;
+  margin: 30px auto 0;
+}
+
+.form-header {
+  text-align: center;
+  h1 {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+}
+
+.question-form {
+  margin-top: 30px;
 }
 
 .labels {
@@ -26,4 +37,9 @@ $left-width: 300px;
   width: 50px;
   display: inline-block;
   text-align: center;
+}
+
+.question-form-submit {
+  text-align: center;
+  font-size: 18px;
 }

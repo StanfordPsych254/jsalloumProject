@@ -1,6 +1,9 @@
 <div class="form-wrapper">
-  <h1>Speaker # {{ speakerNumber }}</h1>
-  <form class="questionForm" ng-submit="submit()">
+  <div class="form-header">
+    <h1>Speaker # {{ speakerNumber + 1 }}</h1>
+    <button ng-click="sound.play()">Click to play speaker</button>
+  </div>
+  <form class="question-form" ng-submit="submit()">
     <div class="labels">
       <div class="scale-item" ng-repeat="item in scale">
         <p>{{ item.anchor }} </p>
@@ -19,6 +22,8 @@
         </div>
       </div>
     </div>
-    <input type="submit" ng-value="questionGroup === questionGroups.length - 1 ? 'Next speaker' : 'Next'">
+    <div class="question-form-submit">
+      <input type="submit" ng-value="questionGroup === questionGroups.length - 1 ? (speakerNumber === numSpeakers - 1 ? 'Finish' : 'Next speaker') : 'Next'">
+    </div>
   </form>
 </div>

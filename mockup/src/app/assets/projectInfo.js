@@ -6,7 +6,11 @@
     .module('app')
     .factory('ProjectInfo', projectInfo);
 
-    function projectInfo() {
+    function projectInfo(MaleData, FemaleData) {
+      var maleData = MaleData.data;
+      var femaleData = FemaleData.data;
+      var numSpeakersPerSex = 4;
+
       var highRankQuestions = [
         'How likely is it that this person is in a position to reward others?',
         'How focused do you imagine this person to be?',
@@ -36,11 +40,17 @@
         return questions.map(function(e) { return { question: e, highRank: label }; });
       }
 
+      var allSpeakers = _.concat(maleData, femaleData);
+      var speakers = _.concat(maleData.slice(0, numSpeakersPerSex), femaleData.slice(0, numSpeakersPerSex));
+
       return {
         questions: _.concat(labelQuestions(highRankQuestions, true), labelQuestions(lowRankQuestions, false)),
         scale: scale,
         questionsPerPage: 4,
-        numSpeakers: 5
+        speakers: speakers,
+        numSpeakers: speakers.length,
+        allSpeakers: allSpeakers,
+        instructionsSampleSize: 10
       };
     }
 

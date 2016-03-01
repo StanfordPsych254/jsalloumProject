@@ -9,7 +9,12 @@
     function instructions() {
       return {
         restrict: 'E',
-        templateUrl: 'instructions/instructions.html'
+        templateUrl: 'instructions/instructions.html',
+        controller: ['$scope', function($scope) {
+          $scope.active = {
+            instructions: true
+          };
+        }]
       };
     }
 
