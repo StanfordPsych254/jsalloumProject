@@ -11,8 +11,11 @@
     <!-- endinject -->
   </head>
   <body ng-controller="AppController">
-    <instructions ng-if="active.instructions"></instructions>
-    <project-form ng-if="active.form"></project-form>
+    <instructions ng-if="active === 'instructions'"></instructions>
+    <project-form ng-if="active === 'form'"></project-form>
+    <div ng-if="active === 'finished'">
+        Thanks for playing!
+    </div>
     <!-- inject:vendor:js -->
     <script src="/angular/angular.js"></script>
     <script src="/lodash/dist/lodash.min.js"></script>
@@ -23,8 +26,8 @@
     <script src="/assets/data/maleData.js"></script>
     <script src="/assets/data/femaleData.js"></script>
     <script src="/instructions/instructions.js"></script>
-    <script src="/assets/projectInfo.js"></script>
     <script src="/form/form.js"></script>
+    <script src="/assets/projectInfo.js"></script>
     <script src="/replication-project-templates.js"></script>
     <!-- endinject -->
   </body>

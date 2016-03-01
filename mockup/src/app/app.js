@@ -10,10 +10,7 @@
       /*
        * Directive that's currently being displayed. Didn't feel like using ng-view or doing any routing
        */
-      $scope.active = {
-        instructions: true,
-        form: false
-      };
+      $scope.active = 'instructions';
 
       $scope.speakers = _.shuffle(ProjectInfo.speakers);
       $scope.numSpeakers = ProjectInfo.numSpeakers;
@@ -25,8 +22,7 @@
        * Start button clicked on the instructions screen. Hides the instructions directive and shows the form directive.
        */
       $scope.start = function() {
-        $scope.active.instructions = false;
-        $scope.active.form = true;
+        $scope.active = 'form';
         initializeQuestions();
       };
 
@@ -37,6 +33,7 @@
           if ($scope.speakerNumber === $scope.numSpeakers - 1) {  // On the last speaker
             console.log('Study finished!');
             console.log($scope.speakers);
+            $scope.active = 'finished';
             return;
           }
           $scope.speakerNumber++;

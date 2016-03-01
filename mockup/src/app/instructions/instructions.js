@@ -11,8 +11,10 @@
         restrict: 'E',
         templateUrl: 'instructions/instructions.html',
         controller: ['$scope', function($scope) {
-          $scope.active = {
-            instructions: true
+          $scope.activeInstructions = 'instructions';
+
+          $scope.setActive = function(active) {
+            $scope.activeInstructions = active;
           };
         }]
       };
