@@ -62,3 +62,5 @@ Like in the original research, the current research will look for a main effect 
 
 ### Differences from Original Study
 Apart from the small sample size increase, the only difference between the current study and the original study is the setting. The current study will be entirely online and distributed via Amazon Mechanical Turk.
+
+## Pilot Analysis
