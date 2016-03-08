@@ -20,9 +20,7 @@
   <body ng-controller="AppController">
     <instructions ng-if="active === 'instructions'"></instructions>
     <project-form ng-if="active === 'form'"></project-form>
-    <div ng-if="active === 'finished'" class="instructions">
-      <p>Thanks for participating!</p>
-    </div>
+    <debriefing ng-if="active === 'finished'"></debriefing>
 
     <!-- build:js(src) scripts/vendor.js -->
     <!-- bower:js -->
