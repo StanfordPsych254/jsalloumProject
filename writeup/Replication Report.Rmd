@@ -138,11 +138,13 @@ boxplot(behaviorScore ~ speakerSex, data = d.raw, xlab="Speaker Sex",
         names = c("Male", "Female"), main = "Raw")
 ```
 
+### Geometric Plots
 
+By plotting behavior score against hierarchy condition and sex, we will look for potential main effects and interaction effects that we are interested in testing with our mixed model anova.
 
 ```{r}
 ggplot(d.raw, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
-  geom_smooth(method = loess, se = F) + 
+  geom_smooth(method = lm, se = F) + 
   geom_point() + 
   xlab("Hierarchy Condition") + 
   ylab("Behavior Score") +
