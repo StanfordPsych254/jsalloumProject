@@ -1,0 +1,50 @@
+<div class="instructions">
+  <div ng-if="activeInstructions === 'instructions'">
+    <div class="stanford-logo">
+      <img src="assets/images/stanford.png" height="46" width="360" alt="Stanford University">
+    </div>
+    <p class="block-text">Many of the interactions you have everyday involve listening to other people's voices -- e.g., on the phone, in face-to-face conversations -- yet we know very little about how voices differ from one another. In this experiment you will be listening to and rating clips of {{ numSpeakers }} speakers reading a short passage.</p>
+
+    <p class="block-text">The speakers were asked to say a standard passage as part of a role-playing exercise.  Hence, they will all read the same passage so that you may focus on the difference in their voices and NOT on what they are saying.  The following is the passage that the speakers will say:</p>
+
+    <p class="block-text italics">"I'm glad that we are able to meet today and I am looking forward to our negotiation.  I know that you and I have different perspectives on some of the key issues and that these differences would need to be resolved for us to come to an agreement"</p>
+
+    <p class="block-text">The experiment is divided into 2 parts, described in general below.</p>
+
+    <P class="block-text">PART 1: The computer will play just a subset of the voices, one after the other, to give you an idea of the variety of the voices. During this time you will just listen to the voices without making any ratings.</P>
+
+    <p class="block-text">PART 2: You will be asked to rate each speaker on what you think the person is like.  You will get specific instructions about the ratings before you start this part.</p>
+
+    <p class="block-text">Please remember that it is important for you to listen carefully to the quality of each voice to make your ratings. However, it is NOT necessary for you to think too long or too deeply about the voices. Your first impression is usually best.</p>
+
+    <button type="button" ng-click="setActive('instructions1')">Start</button>
+    <!-- Legal blurb that we're required to show. -->
+    <p class="block-text legal">Legal information: By answering the following questions, you are participating in a study being performed by cognitive scientists in the Stanford Department of Psychology. If you have questions about this research, please contact us at <a href="mailto://stanfordpysch254@gmail.com">stanfordpysch254@gmail.com</a>. You must be at least 18 years old to participate. Your participation in this research is voluntary. You may decline further participation, at any time, without adverse consequences. Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you. Note however that we have recently been made aware that your public Amazon.com profile can be accessed via your worker ID if you do not choose to opt out. If you would like to opt out of this feature, you may follow instructions available <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=16465241">here</a>.</p>
+  </div>
+  <div ng-if="activeInstructions === 'instructions1'">
+    <h1>Part 1</h1>
+
+    <p class="block-text">Click on the controls below to hear a subset of the voices. During this time you will just listen to the voices without making any ratings. Use this time to adjust your volume level such that you can hear clearly all of the voices, and during Part 2 leave your volume at this level.</p>
+
+    <div ng-repeat="voice in randomSpeakerSample" class="speaker-sample">
+      <div class="speaker-sample-label">
+        <span>Sample voice # {{ $index + 1 }}</span>
+      </div>
+      <audio controls>
+        <source ng-src="{{ 'assets/audio/' + voice.voicefil }}" type="audio/wav">
+        Your browser does not support the audio tag.
+      </audio>
+    </div>
+
+    <button type="button" ng-click="setActive('instructions2')">Next</button>
+  </div>
+  <div ng-if="activeInstructions === 'instructions2'">
+    <h1>Part 2</h1>
+
+    <p class="block-text">You will now hear all {{ numSpeakers }} speakers’ voices, in random order. For each, you will rate what you think the speaker is like on 12 personality characteristics. You may make your ratings anytime, even while the person is still speaking. Each speaker’s voice clip will loop until you have completed all the ratings for that speaker.</p>
+
+    <p class="block-text">In making your ratings, please choose a button that best represents your impressions of what you think the speaker may be like as a person.  We would urge you not to think too long or too deeply about your ratings, as your first impressions are usually the best. There are no right or wrong answers, we are simply interested in finding out about your impressions of the voices.</p>
+
+    <button type="button" ng-click="setActive(null); start()">Next</button>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+$instructions-width: 600px;
+
+.instructions {
+  text-align: center;
+
+  .stanford-logo {
+    width: $instructions-width; 
+    margin: 0 auto; 
+    text-align: center; 
+    background-color: #8C1516; 
+    padding: 20px 15px 10px 10px;
+  }
+
+  button {
+    background: url(/assets/images/button-gradient.png);
+    border: 1px solid #999;
+    border-top: 1px solid #e0e0e0;
+    border-left: 1px solid #e0e0e0;
+    margin: 10px;
+    height: 29px;
+    min-width: 70px;
+  }
+  button:active {
+    border-left: 1px solid #c9c9c9;
+    border-top: 1px solid #c9c9c9;
+    background: none;
+    background-color: #c9c9c9;
+  }
+
+  .block-text {
+    width: $instructions-width;
+    text-align: justify;
+    margin: 0 auto;
+    margin-bottom: 1em;
+
+    &.italics {
+      font-style: italic;
+    }
+  }
+
+  .legal {
+    margin: 0 auto;
+    margin-top: 1.5em;
+    font-size: 0.8em;
+  }
+
+  .speaker-sample {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .speaker-sample:last-child {
+    margin-bottom: 0;
+  }
+
+  .speaker-sample-label {
+    width: 120px;
+    margin-right: 10px;
+  }
+}
