@@ -176,3 +176,8 @@ summary(rs1.2)
 ```
 
 ### 2. ANOVA - Mixed Model Analysis
+
+```{r}
+rs2.1 = aov(behaviorScore ~ (plev * speakerSex) + Error(speakerId/speakerSex) + plev, data = d.raw)
+summary(rs2.1)
+```

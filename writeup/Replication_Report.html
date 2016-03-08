@@ -259,18 +259,24 @@ summary(rs1.2)</code></pre>
 ## Residuals        4  1.438   0.359                 
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-<p>Nesting speaker sex within hierarchy condition.</p>
-<pre class="r"><code>rs1.3 = aov(behaviorScore ~ plev / speakerSex, data = d.raw)
-summary(rs1.3)</code></pre>
-<pre><code>##                 Df Sum Sq Mean Sq F value  Pr(&gt;F)   
-## plev             1  5.014   5.014  17.419 0.00871 **
-## plev:speakerSex  1  2.377   2.377   8.257 0.03485 * 
-## Residuals        5  1.439   0.288                   
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <div id="anova---mixed-model-analysis" class="section level3">
 <h3>2. ANOVA - Mixed Model Analysis</h3>
+<pre class="r"><code>rs2.1 = aov(behaviorScore ~ (plev * speakerSex) + Error(speakerId/speakerSex) + plev, data = d.raw)
+summary(rs2.1)</code></pre>
+<pre><code>## 
+## Error: speakerId
+##      Df Sum Sq Mean Sq
+## plev  1   3.56    3.56
+## 
+## Error: speakerId:speakerSex
+##      Df Sum Sq Mean Sq
+## plev  1  3.493   3.493
+## 
+## Error: Within
+##           Df Sum Sq Mean Sq F value Pr(&gt;F)
+## plev       1  0.339  0.3390   0.943  0.386
+## Residuals  4  1.438  0.3594</code></pre>
 </div>
 </div>
 </div>
