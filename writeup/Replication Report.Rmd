@@ -64,3 +64,94 @@ Like in the original research, the current research will look for a main effect 
 Apart from the small sample size increase, the only difference between the current study and the original study is the setting. The current study will be entirely online and distributed via Amazon Mechanical Turk.
 
 ## Pilot Analysis
+
+### Initializtion and Setup
+
+Loading the libaries needed for data analysis.
+
+```{r}
+options(warn=-1)
+
+rm(list=ls())
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(rjson)
+library(tidyjson)
+
+sem <- function(x) {sd(x, na.rm=TRUE) / sqrt(length(x))}
+ci95 <- function(x) {sem(x) * 1.96}
+```
+
+### Data Reading
+
+Data is read from the various json files into a data frame in long form.
+
+```{r}
+files = dir(paste0("./","sandbox-results/"), pattern = "*.json")
+d.raw = data.frame()
+for (f in files) {
+  jf = paste0("./", "sandbox-results/",f)
+  jd = fromJSON(paste(readLines(jf), collapse=""))
+  for (elem in jd$answers$data) {
+    id = data.frame(speakerId = elem$speakerId,
+                     speakerSex = elem$sex,
+                     plev = elem$plev,
+                     behaviorScore = elem$behaviorScore)
+    d.raw = bind_rows(d.raw, id)
+  }
+}
+```
+
+### Data Preparation for Analysis
+
+To prepare the data for analysis, speakerSex and plev are recoded with [0, 1] -> [male, female] and [0, 1] -> [low-rank, high-rank], respectively. Two sets of analysis will be carried out:
+
+1. Analysis on the raw data in long form (d.raw)
+2. Analysis on the data aggregated by average behavior score, which is what was done in the original research (d.a)
+
+```{r}
+d.raw$speakerSex[d.raw$speakerSex == -1] = 0
+d.raw$plev[d.raw$plev == -1] = 0
+
+d.a = aggregate(d.raw[2:4], list(d.raw$speakerId), mean)
+d.a = rename(d.a, speakerId = Group.1)
+```
+
+Now that the data has been prepared, here's a quick look at our data (in both forms) that we will analyze:
+
+```{r}
+print(head(d.raw))
+print(head(d.a))
+```
+
+### Box Plots
+
+We will gather an idea of the distribution of behavior scores in relation to hierarchy condition and speaker sex.
+
+```{r}
+boxplot(behaviorScore ~ plev, data = d.raw, xlab="Hierarchy Condition",
+        ylab = "Behavior Score", border = c("red", "blue"),
+        names = c("Low", "High"), main = "Raw")
+boxplot(behaviorScore ~ speakerSex, data = d.raw, xlab="Speaker Sex",
+        ylab = "Behavior Score", border = c("red", "blue"),
+        names = c("Male", "Female"), main = "Raw")
+```
+
+
+
+```{r}
+ggplot(d.raw, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
+  geom_smooth(method = loess, se = F) + 
+  geom_point() + 
+  xlab("Hierarchy Condition") + 
+  ylab("Behavior Score") +
+  scale_colour_discrete("Speaker Sex")
+
+ggplot(d.raw, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
+  geom_smooth(method = loess, se = F) + 
+  geom_point() + 
+  xlab("Hierarchy Condition") + 
+  ylab("Behavior Score") +
+  scale_colour_discrete("Speaker Sex")
+```
