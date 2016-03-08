@@ -78,6 +78,7 @@ library(dplyr)
 library(ggplot2)
 library(rjson)
 library(tidyjson)
+library(lme4)
 
 sem <- function(x) {sd(x, na.rm=TRUE) / sqrt(length(x))}
 ci95 <- function(x) {sem(x) * 1.96}
@@ -157,3 +158,21 @@ ggplot(d.raw, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels =
   ylab("Behavior Score") +
   scale_colour_discrete("Speaker Sex")
 ```
+
+### 1. Analysis of Variance (ANOVA) - Fixed Effects Model Analysis
+
+Additive Model
+
+```{r}
+rs1.1 = aov(behaviorScore ~ plev + speakerSex, data = d.raw)
+summary(rs1.1)
+```
+
+Interactive Model
+
+```{r}
+rs1.2 = aov(behaviorScore ~ plev * speakerSex, data = d.raw)
+summary(rs1.2)
+```
+
+### 2. ANOVA - Mixed Model Analysis
