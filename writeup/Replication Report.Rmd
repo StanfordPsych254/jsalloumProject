@@ -61,7 +61,7 @@ The data will be analyzed with the same approach as in the original research. Ef
 Like in the original research, the current research will look for a main effect of speaker's condition, as well as main effect of speaker sex and interaction effects between speaker condition and sex.
 
 ### Differences from Original Study
-Apart from the small sample size increase, the only difference between the current study and the original study is the setting. The current study will be entirely online and distributed via Amazon Mechanical Turk.
+Apart from the small sample size increase, the only difference between the current study and the original study is the setting. The current study will be entirely online and distributed via Amazon Mechanical Turk. Differences in sample size....
 
 ## Pilot Analysis
 
@@ -79,6 +79,7 @@ library(ggplot2)
 library(rjson)
 library(tidyjson)
 library(lme4)
+library(lmerTest)
 
 sem <- function(x) {sd(x, na.rm=TRUE) / sqrt(length(x))}
 ci95 <- function(x) {sem(x) * 1.96}
@@ -95,7 +96,8 @@ for (f in files) {
   jf = paste0("./", "sandbox-results/",f)
   jd = fromJSON(paste(readLines(jf), collapse=""))
   for (elem in jd$answers$data) {
-    id = data.frame(speakerId = elem$speakerId,
+    id = data.frame(workerId = jd$WorkerId,
+                      speakerId = elem$speakerId,
                      speakerSex = elem$sex,
                      plev = elem$plev,
                      behaviorScore = elem$behaviorScore)
@@ -180,4 +182,7 @@ summary(rs1.2)
 ```{r}
 rs2.1 = aov(behaviorScore ~ (plev * speakerSex) + Error(speakerId/speakerSex) + plev, data = d.raw)
 summary(rs2.1)
+
+summary(lmer(behaviorScore ~ (plev * speakerSex) + (1 | speakerId), data = d.raw ))
+summary(lmer(behaviorScore ~ (plev * speakerSex) + (1 | workerId) + (1 | speakerId), data = d.raw ))
 ```
