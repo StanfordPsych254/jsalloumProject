@@ -1,3 +1,12 @@
+$debriefing-width: 600px;
+
 .debriefing {
   text-align: center;
+
+  .block-text {
+    width: $debriefing-width;
+    text-align: justify;
+    margin: 0 auto;
+    margin-bottom: 1em;
+  }
 }
