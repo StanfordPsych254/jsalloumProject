@@ -19,7 +19,7 @@ The present study replicates Experiment 2 from the original research, which asse
 
 Original effect size $\eta^2$ = 0.603, $f^2$ = 0.572. The effect size was determined using the F-statistic and the between- and within-subject degrees of freedom.
 
-$$df_1 = 1$$
+$df_1 = 1$
 
 $df_2 = 55$
 
