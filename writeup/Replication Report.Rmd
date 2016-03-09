@@ -37,22 +37,26 @@ Power |Sample Size Needed
 0.9   | 21
 0.95  | 25
 
-All of these sample sizes are reasonable and financially feasible. Note that in the original research, the sample size used in data analysis actually corresponded to the number of stimuli (speakers) rather than the number of participants in the experiment, since all the scores for each speaker were averaged over all the participants.
+All of these sample sizes are reasonable and financially feasible. Note that here the sample size used in data analysis actually corresponded to the number of stimuli (speakers) rather than the number of participants in the experiment, since all the scores for each speaker were averaged over all the participants in the original research.
 
 ### Planned Sample
 
-Forty undergraduates will be randomly selected for the sample, without restriction on age, gender or demographics. This is the same number as in the original study. However, as a result of our power analysis, each participant will listen to only 24 speakers (25 was the necessary sample size calculated, but it must be an even number to ensure equal respresentation between speaker sex), as opposed to 60 which the number of speakers in the original research.
+Just like in the original study, 40 undergraduates will be randomly selected for the sample, without restriction on age, gender or demographics. However, as a result of our power analysis, each participant will listen to only 24 speakers (25 was the necessary sample size calculated, but it must be an even number to ensure equal respresentation between speaker sex), as opposed to 60 which the number of speakers in the original research.
 
 ### Materials
 
 Recording of speakers saying aloud the Negotiation Passage: "I'm glad that we are able to meet today and I am looking forward to our negotiation. I know that you and I have different perspectives on some of the key issues and that these differences would need to be resolved for us to come to an agreement."
+
+"The voices’ baseline acoustics served as the criterion for the subset of voices such that the
+chosen voices’ baseline values had a smaller average deviation from the mean of their respective
+sex’s baseline values."
 
 The following items are used to measure hierarchy-based behavioral influences:
 ![alt text](Table5.png)
 
 ### Procedure
 
-"Each perceiver listened to a subset of recordings of the Negotiation Passage from Experiment 1 (30 female and 30 male voices). After each recording, perceivers rated the speaker on 12 hierarchy-based behaviors plausible in a negotiation context, using a scale from 1 (not at all) to 7  (very much). Six of these behaviors were associated with high rank, and six with low rank. The order of the speakers and the order of the behaviors were randomized for each perceiver. The low-rank behaviors were reverse-scored, and then scores for all 12 behaviors were averaged to create one composite hierarchical-inference score per perceiver per speaker (α = .92). After rating all the speakers, the perceivers listened to the voices a second time, in random order, and judged whether each speaker had been in a high- or low-rank role."
+"Each perceiver listened to a subset of recordings of the Negotiation Passage from Experiment 1 (12 female and 12 male voices). After each recording, perceivers rated the speaker on 12 hierarchy-based behaviors plausible in a negotiation context, using a scale from 1 (not at all) to 7  (very much). Six of these behaviors were associated with high rank, and six with low rank. The order of the speakers and the order of the behaviors were randomized for each perceiver. The low-rank behaviors were reverse-scored, and then scores for all 12 behaviors were averaged to create one composite hierarchical-inference score per perceiver per speaker. 
 
 The original procedure is followed exactly, with the exception that Experiment 1 isn't actually carried out - it is just used as a reference in the original research to obtain the recordings of the speakers.
 
@@ -64,7 +68,8 @@ The data will be analyzed with the same approach as in the original research. Ef
 Like in the original research, the current research will look for a main effect of speaker's condition, as well as main effect of speaker sex and interaction effects between speaker condition and sex.
 
 ### Differences from Original Study
-Apart from the small sample size increase, the only difference between the current study and the original study is the setting. The current study will be entirely online and distributed via Amazon Mechanical Turk. Differences in sample size....
+
+The biggest difference from the original study is the number of speakers that each participant listens to. In the original study each participant listened to and made inferences about 60 speakers, whereas in this study the number of speakers is reduced to 24. Another key difference is that answering the 12 questions about hierarchy-based behavior is the only inferential task that participants perform in this study. The third difference between the current study and the original study is the setting; the current study will be entirely online and distributed via Amazon Mechanical Turk.
 
 ## Pilot Analysis
 
@@ -89,7 +94,7 @@ sem <- function(x) {sd(x, na.rm=TRUE) / sqrt(length(x))}
 ci95 <- function(x) {sem(x) * 1.96}
 ```
 
-### Data Reading
+#### Data Reading
 
 Data is read from the various json files into a data frame in long form.
 
@@ -102,72 +107,96 @@ for (f in files) {
   jd = fromJSON(paste(readLines(jf), collapse=""))
   for (elem in jd$answers$data) {
     id = data.frame(workerId = as.factor(wid),
-                      speakerId = elem$speakerId,
-                     speakerSex = elem$sex,
-                     plev = elem$plev,
-                     behaviorScore = elem$behaviorScore)
+                    speakerId = elem$speakerId,
+                    speakerSex = elem$sex,
+                    plev = elem$plev,
+                    behaviorScore = elem$behaviorScore)
     d.raw = bind_rows(d.raw, id)
   }
   wid = wid + 1
 }
 ```
 
-### Data Preparation for Analysis
+#### Data Preparation for Analysis
 
-To prepare the data for analysis, speakerSex and plev are recoded with [0, 1] -> [male, female] and [0, 1] -> [low-rank, high-rank], respectively. Two sets of analysis will be carried out:
+To prepare the data for analysis, speakerSex and plev are recoded as ['Male', 'Female'] and ['Low-rank', 'High-rank'], respectively. Two sets of analysis will be carried out:
 
-1. Analysis on the raw data in long form (d.raw)
-2. Analysis on the data aggregated by average behavior score, which is what was done in the original research (d.a)
+1. Analysis on the data aggregated by average behavior score (d.a and d.af), in order to replicate the analysis done in the original research.
+2. Analysis on the raw data in long form (d.raw and d.rawf). Mixed model analysis will be conducted to see if there are any random effects of other variables such as speaker id or worker id.
 
 ```{r}
+# d.a is the aggregated data with speakerSex and plev as numeric, while d.af codes speakerSex and plev as factors
+
+d.a = aggregate(d.raw[3:5], list(d.raw$speakerId), mean)
+d.a = rename(d.a, speakerId = Group.1)
+d.af = d.a
+
+d.a$speakerSex[d.a$speakerSex == -1] = 0
+d.a$plev[d.a$plev == -1] = 0
+
+d.af$speakerSex[d.af$speakerSex == -1] = 'Male'
+d.af$speakerSex[d.af$speakerSex == 1] = 'Female'
+d.af$plev[d.af$plev == -1] = 'Low'
+d.af$plev[d.af$plev == 1] = 'High'
+
+# d.raw is the raw data with speakerSex and plev as numeric, while d.rawf codes speakerSex and plev as factors
+
+d.rawf = d.raw
+
 d.raw$speakerSex[d.raw$speakerSex == -1] = 0
 d.raw$plev[d.raw$plev == -1] = 0
 
-d.a = aggregate(d.raw[2:4], list(d.raw$speakerId), mean)
-d.a = rename(d.a, speakerId = Group.1)
+d.rawf$speakerSex[d.rawf$speakerSex == -1] = 'Male'
+d.rawf$speakerSex[d.rawf$speakerSex == 1] = 'Female'
+d.rawf$plev[d.rawf$plev == -1] = 'Low'
+d.rawf$plev[d.rawf$plev == 1] = 'High'
 ```
 
 Now that the data has been prepared, here's a quick look at our data (in both forms) that we will analyze:
 
 ```{r}
-print(head(d.raw))
-print(head(d.a))
+print(head(d.af))
+print(head(d.rawf))
 ```
 
-### Box Plots
+### 1. Replication of Original Analysis
+
+#### Box Plots
 
 We will gather an idea of the distribution of behavior scores in relation to hierarchy condition and speaker sex.
 
 ```{r}
-boxplot(behaviorScore ~ plev, data = d.raw, xlab="Hierarchy Condition",
-        ylab = "Behavior Score", border = c("red", "blue"),
-        names = c("Low", "High"), main = "Raw")
-boxplot(behaviorScore ~ speakerSex, data = d.raw, xlab="Speaker Sex",
-        ylab = "Behavior Score", border = c("red", "blue"),
-        names = c("Male", "Female"), main = "Raw")
+boxplot(behaviorScore ~ factor(plev, levels = c('Low', 'High')), data = d.af, 
+        xlab="Hierarchy Condition", ylab = "Behavior Score", border = c("red", "blue"),
+        main = "Behavior Score between Hierarchy Condition")
+boxplot(behaviorScore ~ factor(speakerSex, levels = c('Male', 'Female')), data = d.af,
+        xlab="Speaker Sex", ylab = "Behavior Score", border = c("red", "blue"),
+        main = "Behavior Score between Speaker Sex")
 ```
 
-### Geometric Plots
+#### Geometric Plots
 
-By plotting behavior score against hierarchy condition and sex, we will look for potential main effects and interaction effects that we are interested in testing with our mixed model anova.
+By plotting behavior score against hierarchy condition and sex, we will look for potential main effects and interaction effects that we are interested in testing with our anova.
 
 ```{r}
-ggplot(d.raw, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
+
+ggplot(d.a, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
   geom_smooth(method = lm, se = F) + 
   geom_point() + 
   xlab("Hierarchy Condition") + 
   ylab("Behavior Score") +
   scale_colour_discrete("Speaker Sex")
 
-ggplot(d.raw, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
-  geom_smooth(method = loess, se = F) + 
+ggplot(d.a, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
+  geom_smooth(method = loess.smooth, se = F) + 
   geom_point() + 
   xlab("Hierarchy Condition") + 
   ylab("Behavior Score") +
   scale_colour_discrete("Speaker Sex")
+
 ```
 
-### 1. Analysis of Variance (ANOVA) - Fixed Effects Model Analysis
+#### Analysis of Variance (ANOVA) - Fixed Effects Model Analysis
 
 Additive Model
 
@@ -183,12 +212,63 @@ rs1.2 = aov(behaviorScore ~ plev * speakerSex, data = d.raw)
 summary(rs1.2)
 ```
 
-### 2. ANOVA - Mixed Model Analysis
+### 2. Additional Analysis
+
+All the data analysis thus far replicates the analysis that was actually done in the original study. From here on all analysis aims to follow up on the original analysis by analyzing the raw data (unaggreagted, in long form) to look for other effects.
+
+#### Box Plots
+
+Just like with the aggregated data, we will gather an idea of the distribution of behavior scores in relation to hierarchy condition and speaker sex.
+
+```{r}
+boxplot(behaviorScore ~ factor(plev, levels = c('Low', 'High')), data = d.rawf, 
+        xlab="Hierarchy Condition", ylab = "Behavior Score", border = c("red", "blue"),
+        main = "Behavior Score between Hierarchy Condition")
+boxplot(behaviorScore ~ factor(speakerSex, levels = c('Male', 'Female')), data = d.rawf,
+        xlab="Speaker Sex", ylab = "Behavior Score", border = c("red", "blue"),
+        main = "Behavior Score between Speaker Sex")
+```
+
+#### Geometric Plots
+
+By plotting behavior score against hierarchy condition and sex, we will check to ensure that the effects found using the aggregated data are still present in the raw data.
+
+```{r}
+
+ggplot(d.raw, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
+  geom_smooth(method = lm, se = F) + 
+  geom_point() + 
+  xlab("Hierarchy Condition") + 
+  ylab("Behavior Score") +
+  scale_colour_discrete("Speaker Sex")
+
+
+ggplot(d.raw, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
+  geom_smooth(method = loess, se = F) + 
+  geom_point() + 
+  xlab("Hierarchy Condition") + 
+  ylab("Behavior Score") +
+  scale_colour_discrete("Speaker Sex")
+
+```
+
+#### ANOVA - Mixed Model Analysis
 
 ```{r}
 rs2.1 = aov(behaviorScore ~ (plev * speakerSex) + Error(speakerId/speakerSex) + plev, data = d.raw)
 summary(rs2.1)
+```
 
-summary(lmer(behaviorScore ~ (plev * speakerSex) + (1 | speakerId), data = d.raw ))
-summary(lmer(behaviorScore ~ (plev * speakerSex) + (1 | workerId) + (1 | speakerId), data = d.raw ))
+Random effect of speakerId
+
+```{r}
+rs2.2 = lmer(behaviorScore ~ (plev * speakerSex) + (1 | speakerId), data = d.raw )
+summary(rs2.2)
+```
+
+Random effect of speakerId and workerId
+
+```{r}
+rs2.3 = lmer(behaviorScore ~ (plev * speakerSex) + (1 | workerId) + (1 | speakerId), data = d.raw )
+summary(rs2.3)
 ```
