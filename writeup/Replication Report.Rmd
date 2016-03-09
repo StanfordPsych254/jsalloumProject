@@ -17,17 +17,17 @@ The present study replicates Experiment 2 from the original research, which asse
 
 ### Power Analysis
 
-Original effect size \(\eta^2\) = 0.603, \(f^2\) = 0.572. The effect size was determined using the F-statistic and the between- and within-subject degrees of freedom.
+Original effect size $\eta^2$ = 0.603, $f^2$ = 0.572. The effect size was determined using the F-statistic and the between- and within-subject degrees of freedom.
 
-\(df_1 = 1\)
+$df_1 = 1$
 
-\(df_2 = 55\)
+$df_2 = 55$
 
-\(F(1, 55) = 83.67\)
+$F(1, 55) = 83.67$
 
-\(\eta^2 = \frac{df_1F}{df_1F + df_2} = 0.603\)
+$\eta^2 = \frac{df_1F}{df_1F + df_2} = 0.603$
 
-\(f^2 = \frac{\eta^2}{1 - \eta^2} = 0.572\)
+$f^2 = \frac{\eta^2}{1 - \eta^2} = 0.572$
 
 Power analysis was done using the software G*Power. To detect an effect size of 0.603, the following samples sizes are needed to achieve various power:
 	
