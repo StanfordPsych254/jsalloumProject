@@ -9,7 +9,7 @@
     function projectInfo(MaleData, FemaleData) {
       var maleData = MaleData.data;
       var femaleData = FemaleData.data;
-      var numSpeakersPerSex = 1;
+      var numSpeakersPerSex = 12;
 
       var highRankQuestions = [
         'How likely is it that this person is in a position to reward others?',
