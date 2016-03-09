@@ -105,11 +105,11 @@ img {
 </tr>
 </tbody>
 </table>
-<p>All of these sample sizes are reasonable and financially feasible.</p>
+<p>All of these sample sizes are reasonable and financially feasible. Note that in the original research, the sample size used in data analysis actually corresponded to the number of stimuli (speakers) rather than the number of participants in the experiment, since all the scores for each speaker were averaged over all the participants.</p>
 </div>
 <div id="planned-sample" class="section level3">
 <h3>Planned Sample</h3>
-<p>Sixty-three undergraduates will be randomly selected for the sample, without restriction on age, gender or demographics.</p>
+<p>Forty undergraduates will be randomly selected for the sample, without restriction on age, gender or demographics. This is the same number as in the original study. However, as a result of our power analysis, each participant will listen to only 24 speakers (25 was the necessary sample size calculated, but it must be an even number to ensure equal respresentation between speaker sex), as opposed to 60 which the number of speakers in the original research.</p>
 </div>
 <div id="materials" class="section level3">
 <h3>Materials</h3>
@@ -118,15 +118,18 @@ img {
 </div>
 <div id="procedure" class="section level3">
 <h3>Procedure</h3>
-<p>“Each perceiver listened to a subset of recordings of the Negotiation Passage from Experiment 1 (30 female and 30 male voices). After each recording, perceivers rated the speaker on 12 hierarchy-based behaviors plausible in a negotiation context, using a scale from 1 (not at all) to 7 (very much). Six of these behaviors were associated with high rank, and six with low rank. The order of the speakers and the order of the behaviors were randomized for each perceiver. The low-rank behaviors were reverse-scored, and then scores for all 12 behaviors were averaged to create one composite hierarchical-inference score per perceiver per speaker (α = .92). After rating all the speakers, the perceivers listened to the voices a second time, in random order, and judged whether each speaker had been in a high- or low-rank role.” The original procedure is followed exactly, with the exception that Experiment 1 isn’t actually carried out - it is just used as a reference in the original research to obtain the recordings of the speakers.</p>
+<p>“Each perceiver listened to a subset of recordings of the Negotiation Passage from Experiment 1 (30 female and 30 male voices). After each recording, perceivers rated the speaker on 12 hierarchy-based behaviors plausible in a negotiation context, using a scale from 1 (not at all) to 7 (very much). Six of these behaviors were associated with high rank, and six with low rank. The order of the speakers and the order of the behaviors were randomized for each perceiver. The low-rank behaviors were reverse-scored, and then scores for all 12 behaviors were averaged to create one composite hierarchical-inference score per perceiver per speaker (α = .92). After rating all the speakers, the perceivers listened to the voices a second time, in random order, and judged whether each speaker had been in a high- or low-rank role.”</p>
+<p>The original procedure is followed exactly, with the exception that Experiment 1 isn’t actually carried out - it is just used as a reference in the original research to obtain the recordings of the speakers.</p>
 </div>
 <div id="analysis-plan" class="section level3">
 <h3>Analysis Plan</h3>
-<p>The data will be analyzed with the same approach as in the original research. Effect of condition on hierarchy-based behavioral inferences: “We examined the extent to which perceivers’ hierarchical inferences were consistent with the speakers’ hierarchical rank using a 2 (speaker’s condition: high rank, low rank) × 2 (speaker’s sex: male, female) analysis of variance.” Like in the original research, the current research will look for a main effect of speaker’s condition, as well as main effect of speaker sex and interaction effects between speaker condition and sex.</p>
+<p>The data will be analyzed with the same approach as in the original research. Effect of condition on hierarchy-based behavioral inferences:</p>
+<p>“We examined the extent to which perceivers’ hierarchical inferences were consistent with the speakers’ hierarchical rank using a 2 (speaker’s condition: high rank, low rank) × 2 (speaker’s sex: male, female) analysis of variance.”</p>
+<p>Like in the original research, the current research will look for a main effect of speaker’s condition, as well as main effect of speaker sex and interaction effects between speaker condition and sex.</p>
 </div>
 <div id="differences-from-original-study" class="section level3">
 <h3>Differences from Original Study</h3>
-<p>Apart from the small sample size increase, the only difference between the current study and the original study is the setting. The current study will be entirely online and distributed via Amazon Mechanical Turk.</p>
+<p>Apart from the small sample size increase, the only difference between the current study and the original study is the setting. The current study will be entirely online and distributed via Amazon Mechanical Turk. Differences in sample size….</p>
 </div>
 </div>
 <div id="pilot-analysis" class="section level2">
@@ -166,25 +169,33 @@ library(lme4)</code></pre>
 <pre><code>## The following object is masked from 'package:stats':
 ## 
 ##     step</code></pre>
+<pre class="r"><code>library(gridExtra)</code></pre>
+<pre><code>## 
+## Attaching package: 'gridExtra'</code></pre>
+<pre><code>## The following object is masked from 'package:dplyr':
+## 
+##     combine</code></pre>
 <pre class="r"><code>sem &lt;- function(x) {sd(x, na.rm=TRUE) / sqrt(length(x))}
 ci95 &lt;- function(x) {sem(x) * 1.96}</code></pre>
 </div>
 <div id="data-reading" class="section level3">
 <h3>Data Reading</h3>
 <p>Data is read from the various json files into a data frame in long form.</p>
-<pre class="r"><code>files = dir(paste0(&quot;./&quot;,&quot;sandbox-results/&quot;), pattern = &quot;*.json&quot;)
+<pre class="r"><code>wid = 1
+files = dir(paste0(&quot;./&quot;,&quot;sandbox-results/&quot;), pattern = &quot;*.json&quot;)
 d.raw = data.frame()
 for (f in files) {
   jf = paste0(&quot;./&quot;, &quot;sandbox-results/&quot;,f)
   jd = fromJSON(paste(readLines(jf), collapse=&quot;&quot;))
   for (elem in jd$answers$data) {
-    id = data.frame(workerId = jd$WorkerId,
+    id = data.frame(workerId = as.factor(wid),
                       speakerId = elem$speakerId,
                      speakerSex = elem$sex,
                      plev = elem$plev,
                      behaviorScore = elem$behaviorScore)
     d.raw = bind_rows(d.raw, id)
   }
+  wid = wid + 1
 }</code></pre>
 </div>
 <div id="data-preparation-for-analysis" class="section level3">
@@ -203,14 +214,14 @@ d.a = rename(d.a, speakerId = Group.1)</code></pre>
 <pre class="r"><code>print(head(d.raw))</code></pre>
 <pre><code>## Source: local data frame [6 x 5]
 ## 
-##         workerId speakerId speakerSex  plev behaviorScore
-##           (fctr)     (dbl)      (dbl) (dbl)         (dbl)
-## 1 A390QLMCECQN7L        77          0     0      3.000000
-## 2 A390QLMCECQN7L       154          1     1      4.583333
-## 3 A390QLMCECQN7L       167          1     0      3.166667
-## 4 A390QLMCECQN7L        16          0     1      5.583333
-## 5 A390QLMCECQN7L       154          1     1      3.000000
-## 6 A390QLMCECQN7L       167          1     0      2.833333</code></pre>
+##   workerId speakerId speakerSex  plev behaviorScore
+##      (chr)     (dbl)      (dbl) (dbl)         (dbl)
+## 1        1        77          0     0      3.000000
+## 2        1       154          1     1      4.583333
+## 3        1       167          1     0      3.166667
+## 4        1        16          0     1      5.583333
+## 5        2       154          1     1      3.000000
+## 6        2       167          1     0      2.833333</code></pre>
 <pre class="r"><code>print(head(d.a))</code></pre>
 <pre><code>##   speakerId speakerId speakerSex plev
 ## 1        16        16          0    1
@@ -317,6 +328,38 @@ summary(rs2.1)</code></pre>
 ## plev        -0.707              
 ## speakerSex  -0.707  0.500       
 ## plev:spkrSx  0.500 -0.707 -0.707</code></pre>
+<pre class="r"><code>summary(lmer(behaviorScore ~ (plev * speakerSex) + (1 | workerId) + (1 | speakerId), data = d.raw ))</code></pre>
+<pre><code>## Linear mixed model fit by REML t-tests use Satterthwaite approximations
+##   to degrees of freedom [lmerMod]
+## Formula: 
+## behaviorScore ~ (plev * speakerSex) + (1 | workerId) + (1 | speakerId)
+##    Data: d.raw
+## 
+## REML criterion at convergence: 9.3
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -1.2116 -0.1915  0.0000  0.1915  1.2116 
+## 
+## Random effects:
+##  Groups    Name        Variance Std.Dev.
+##  speakerId (Intercept) 2.5533   1.5979  
+##  workerId  (Intercept) 0.1406   0.3750  
+##  Residual              0.2188   0.4677  
+## Number of obs: 8, groups:  speakerId, 4; workerId, 2
+## 
+## Fixed effects:
+##                   Estimate Std. Error         df t value Pr(&gt;|t|)
+## (Intercept)      2.958e+00  1.653e+00  2.019e-05   1.789        1
+## plev             2.375e+00  2.308e+00  1.917e-05   1.029        1
+## speakerSex       4.167e-02  2.308e+00  1.917e-05   0.018        1
+## plev:speakerSex -1.583e+00  3.264e+00  1.917e-05  -0.485        1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) plev   spkrSx
+## plev        -0.698              
+## speakerSex  -0.698  0.500       
+## plev:spkrSx  0.494 -0.707 -0.707</code></pre>
 </div>
 </div>
 </div>

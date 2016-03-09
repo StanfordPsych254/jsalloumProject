@@ -37,11 +37,11 @@ Power |Sample Size Needed
 0.9   | 21
 0.95  | 25
 
-All of these sample sizes are reasonable and financially feasible.
+All of these sample sizes are reasonable and financially feasible. Note that in the original research, the sample size used in data analysis actually corresponded to the number of stimuli (speakers) rather than the number of participants in the experiment, since all the scores for each speaker were averaged over all the participants.
 
 ### Planned Sample
 
-Forty undergraduates will be randomly selected for the sample, without restriction on age, gender or demographics.
+Forty undergraduates will be randomly selected for the sample, without restriction on age, gender or demographics. This is the same number as in the original study. However, as a result of our power analysis, each participant will listen to only 24 speakers (25 was the necessary sample size calculated, but it must be an even number to ensure equal respresentation between speaker sex), as opposed to 60 which the number of speakers in the original research.
 
 ### Materials
 
@@ -53,11 +53,14 @@ The following items are used to measure hierarchy-based behavioral influences:
 ### Procedure
 
 "Each perceiver listened to a subset of recordings of the Negotiation Passage from Experiment 1 (30 female and 30 male voices). After each recording, perceivers rated the speaker on 12 hierarchy-based behaviors plausible in a negotiation context, using a scale from 1 (not at all) to 7  (very much). Six of these behaviors were associated with high rank, and six with low rank. The order of the speakers and the order of the behaviors were randomized for each perceiver. The low-rank behaviors were reverse-scored, and then scores for all 12 behaviors were averaged to create one composite hierarchical-inference score per perceiver per speaker (α = .92). After rating all the speakers, the perceivers listened to the voices a second time, in random order, and judged whether each speaker had been in a high- or low-rank role."
-	The original procedure is followed exactly, with the exception that Experiment 1 isn't actually carried out - it is just used as a reference in the original research to obtain the recordings of the speakers.
+
+The original procedure is followed exactly, with the exception that Experiment 1 isn't actually carried out - it is just used as a reference in the original research to obtain the recordings of the speakers.
 
 ### Analysis Plan
 The data will be analyzed with the same approach as in the original research. Effect of condition on hierarchy-based behavioral inferences:
+
 "We examined the extent to which perceivers' hierarchical inferences were consistent with the speakers' hierarchical rank using a 2 (speaker's condition: high rank, low rank) × 2 (speaker's sex: male, female) analysis of variance."
+
 Like in the original research, the current research will look for a main effect of speaker's condition, as well as main effect of speaker sex and interaction effects between speaker condition and sex.
 
 ### Differences from Original Study
@@ -80,6 +83,7 @@ library(rjson)
 library(tidyjson)
 library(lme4)
 library(lmerTest)
+library(gridExtra)
 
 sem <- function(x) {sd(x, na.rm=TRUE) / sqrt(length(x))}
 ci95 <- function(x) {sem(x) * 1.96}
@@ -90,19 +94,21 @@ ci95 <- function(x) {sem(x) * 1.96}
 Data is read from the various json files into a data frame in long form.
 
 ```{r}
+wid = 1
 files = dir(paste0("./","sandbox-results/"), pattern = "*.json")
 d.raw = data.frame()
 for (f in files) {
   jf = paste0("./", "sandbox-results/",f)
   jd = fromJSON(paste(readLines(jf), collapse=""))
   for (elem in jd$answers$data) {
-    id = data.frame(workerId = jd$WorkerId,
+    id = data.frame(workerId = as.factor(wid),
                       speakerId = elem$speakerId,
                      speakerSex = elem$sex,
                      plev = elem$plev,
                      behaviorScore = elem$behaviorScore)
     d.raw = bind_rows(d.raw, id)
   }
+  wid = wid + 1
 }
 ```
 

@@ -15,7 +15,7 @@
 
     <p class="block-text">PART 2: You will be asked to rate each speaker on what you think the person is like.  You will get specific instructions about the ratings before you start this part.</p>
 
-    <p class="block-text">Please remember that it is important for you to listen carefully to the quality of each voice to make your ratings. However, it is NOT necessary for you to think too long or too deeply about the voices. Your first impression is usually best.</p>
+    <p class="block-text">Please remember that it is important for you to listen carefully to the quality of each voice to make your ratings. However, it is NOT necessary for you to think too long or too deeply about the voices. Your first impression is usually best. The study will take approximately 15-20 minutes to complete. Click below to start.</p>
 
     <button type="button" ng-click="setActive('instructions1')">Start</button>
     <!-- Legal blurb that we're required to show. -->
@@ -24,7 +24,7 @@
   <div ng-if="activeInstructions === 'instructions1'">
     <h1>Part 1</h1>
 
-    <p class="block-text">Click on the controls below to hear a subset of the voices. During this time you will just listen to the voices without making any ratings. Use this time to adjust your volume level such that you can hear clearly all of the voices, and during Part 2 leave your volume at this level.</p>
+    <p class="block-text">Click on the controls below to hear a subset of the voices. During this time you will just listen to the voices without making any ratings. Use this time to adjust your volume level such that you can hear clearly all of the voices, and during Part 2 leave your volume at this level. Click 'Next' when you are ready.</p>
 
     <div ng-repeat="voice in randomSpeakerSample" class="speaker-sample">
       <div class="speaker-sample-label">
@@ -43,7 +43,7 @@
 
     <p class="block-text">You will now hear all {{ numSpeakers }} speakers’ voices, in random order. For each, you will rate what you think the speaker is like on 12 personality characteristics. You may make your ratings anytime, even while the person is still speaking. Each speaker’s voice clip will loop until you have completed all the ratings for that speaker.</p>
 
-    <p class="block-text">In making your ratings, please choose a button that best represents your impressions of what you think the speaker may be like as a person.  We would urge you not to think too long or too deeply about your ratings, as your first impressions are usually the best. There are no right or wrong answers, we are simply interested in finding out about your impressions of the voices.</p>
+    <p class="block-text">In making your ratings, please select a rating on a scale from 1 (not at all) to 7 (very much) that best represents your impressions of what you think the speaker may be like as a person.  We would urge you not to think too long or too deeply about your ratings, as your first impressions are usually the best. There are no right or wrong answers, we are simply interested in finding out about your impressions of the voices.</p>
 
     <button type="button" ng-click="setActive(null); start()">Next</button>
   </div>

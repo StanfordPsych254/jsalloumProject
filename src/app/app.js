@@ -3,7 +3,7 @@
   'use strict';
 
   angular
-    .module('app', ['ngAudio'])
+    .module('app', ['ngAudio', 'ui.bootstrap'])
     .controller('AppController', appController);
 
     function appController($scope, ProjectInfo, ngAudio) {
@@ -31,8 +31,6 @@
           getCurrentSpeaker().behaviorScore = scoreQuestions() / $scope.questions.length;
           $scope.sound.stop();
           if ($scope.speakerNumber === $scope.numSpeakers - 1) {  // On the last speaker
-            // console.log('Study finished!');
-            // console.log($scope.speakers);
             $scope.active = 'finished';
             submitData();
             return;

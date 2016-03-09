@@ -36,5 +36,17 @@
 
 .question-form-submit {
   text-align: center;
-  font-size: 18px;
+}
+
+.progress-bar-wrapper {
+  margin-top: 90px;
+  text-align: center;
+
+  .progress-label {
+    margin-bottom: 4px;
+  }
+
+  .center-block {
+    width: 50%;
+  }
 }

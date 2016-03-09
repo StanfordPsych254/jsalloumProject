@@ -26,4 +26,8 @@
       <input type="submit" ng-value="questionGroup === questionGroups.length - 1 ? (speakerNumber === numSpeakers - 1 ? 'Finish' : 'Next speaker') : 'Next'">
     </div>
   </form>
+  <div class="progress-bar-wrapper">
+    <p class="progress-label">Progress</p>
+    <div class="center-block"><uib-progressbar value="speakerNumber" ng-max="numSpeakers">{{ speakerNumber * 100 / numSpeakers }}%</uib-progressbar></div>
+  </div>
 </div>
