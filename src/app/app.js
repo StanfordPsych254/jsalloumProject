@@ -6,7 +6,7 @@
     .module('app', ['ngAudio', 'ui.bootstrap'])
     .controller('AppController', appController);
 
-    function appController($scope, ProjectInfo, ngAudio) {
+    function appController($scope, ProjectInfo, ngAudio, $uibModal) {
       /*
        * Directive that's currently being displayed. Didn't feel like using ng-view or doing any routing
        */
@@ -27,18 +27,30 @@
       };
 
       $scope.submit = function() {
-        if ($scope.questionGroup === $scope.questionGroups.length - 1) { // On the last question group for current speaker
-          getCurrentSpeaker().behaviorScore = scoreQuestions() / $scope.questions.length;
-          $scope.sound.stop();
-          if ($scope.speakerNumber === $scope.numSpeakers - 1) {  // On the last speaker
-            $scope.active = 'finished';
-            submitData();
-            return;
+        if (!$scope.sound.paused) {
+          if ($scope.questionGroup === $scope.questionGroups.length - 1) { // On the last question group for current speaker
+            getCurrentSpeaker().behaviorScore = scoreQuestions() / $scope.questions.length;
+            $scope.sound.stop();
+            if ($scope.speakerNumber === $scope.numSpeakers - 1) {  // On the last speaker
+              $scope.active = 'finished';
+              submitData();
+              return;
+            }
+            $scope.speakerNumber++;
+            initializeQuestions();
+          } else {
+            $scope.questionGroup++;
           }
-          $scope.speakerNumber++;
-          initializeQuestions();
         } else {
-          $scope.questionGroup++;
+          $uibModal.open({
+            animate: true,
+            size: 'sm',
+            template: '<div class="modal-body">Don\'t forget to listen to the speaker!</div>' +
+                      '<div class="modal-footer">' +
+                        '<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>' +
+                        '<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>' +
+                      '</div>'
+          })
         }
       };
 
@@ -55,15 +67,6 @@
        */
       function getCurrentSpeaker() {
         return $scope.speakers[$scope.speakerNumber];
-      }
-
-      /*
-       * Low rank-questions are reverse scored, so their scores need to be inverted
-       */
-      function invertScores() {
-        _.each($scope.questions, function(e) {
-          e.score = e.highRank ? e.score : $scope.scale.length + 1 - e.score;
-        });
       }
 
       function scoreQuestions() {

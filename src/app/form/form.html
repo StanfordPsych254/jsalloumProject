@@ -28,6 +28,6 @@
   </form>
   <div class="progress-bar-wrapper">
     <p class="progress-label">Progress</p>
-    <div class="center-block"><uib-progressbar value="speakerNumber" ng-max="numSpeakers">{{ speakerNumber * 100 / numSpeakers }}%</uib-progressbar></div>
+    <div class="center-block"><uib-progressbar value="speakerNumber" ng-max="numSpeakers">{{ (speakerNumber * 100 / numSpeakers).toFixed(1) }}%</uib-progressbar></div>
   </div>
 </div>
