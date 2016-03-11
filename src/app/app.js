@@ -45,11 +45,8 @@
           $uibModal.open({
             animate: true,
             size: 'sm',
-            template: '<div class="modal-body">Don\'t forget to listen to the speaker!</div>' +
-                      '<div class="modal-footer">' +
-                        '<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>' +
-                        '<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>' +
-                      '</div>'
+            templateUrl: 'app/modal/modal.html',
+            controller: 'ModalInstanceController'
           })
         }
       };
