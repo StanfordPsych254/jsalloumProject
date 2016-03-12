@@ -1,4 +1,4 @@
-# REPORT TEMPLATE
+# REPLICATION REPORT
 
 
 ### Replication of The Sound of Power: Conveying and Detecting Hierarchical Rank Through Voice by Ko et al. (2015, Psychological Science)
