@@ -100,10 +100,10 @@ Data is read from the various json files into a data frame in long form.
 
 ```{r}
 wid = 1
-files = dir(paste0("./","sandbox-results/"), pattern = "*.json")
+files = dir(paste0("./","production-results/"), pattern = "*.json")
 d.raw = data.frame()
 for (f in files) {
-  jf = paste0("./", "sandbox-results/",f)
+  jf = paste0("./", "production-results/",f)
   jd = fromJSON(paste(readLines(jf), collapse=""))
   for (elem in jd$answers$data) {
     id = data.frame(workerId = as.factor(wid),
@@ -117,15 +117,21 @@ for (f in files) {
 }
 ```
 
+The original data is simply read in from the csv provided on OSF.
+
+```{r}
+d = read.csv('S2_voice_level_Final.csv')
+```
+
 #### Data Preparation for Analysis
 
 To prepare the data for analysis, speakerSex and plev are recoded as ['Male', 'Female'] and ['Low-rank', 'High-rank'], respectively. Two sets of analysis will be carried out:
 
-1. Analysis on the data aggregated by average behavior score (d.a and d.af), in order to replicate the analysis done in the original research.
+1. Analysis on the data aggregated by average behavior score (d.a and d.af), in order to replicate the analysis done in the original research. To draw comparison to the original results, plots will also be generated for the original data (d.o and d.of).
 2. Analysis on the raw data in long form (d.raw and d.rawf). Mixed model analysis will be conducted to see if there are any random effects of other variables such as speaker id or worker id.
 
 ```{r}
-# d.a is the aggregated data with speakerSex and plev as numeric, while d.af codes speakerSex and plev as factors
+# d.a is the aggregated data with speakerSex and plev as numeric, while d.af codes speakerSex and plev as factors. The same applies for d.o and d.of, which is the original data
 
 d.a = aggregate(d.raw[3:5], list(d.raw$speakerId), mean)
 d.a = rename(d.a, speakerId = Group.1)
@@ -138,6 +144,16 @@ d.af$speakerSex[d.af$speakerSex == -1] = 'Male'
 d.af$speakerSex[d.af$speakerSex == 1] = 'Female'
 d.af$plev[d.af$plev == -1] = 'Low'
 d.af$plev[d.af$plev == 1] = 'High'
+
+d.o = select(d, voice, plev, vsex, newpster)
+d.o = rename(d.o, speakerSex = vsex, behaviorScore = newpster)
+d.o = d.o[complete.cases(d.o),]
+d.of = d.o
+
+d.of$speakerSex[d.of$speakerSex == -1] = 'Male'
+d.of$speakerSex[d.of$speakerSex == 1] = 'Female'
+d.of$plev[d.of$plev == -1] = 'Low'
+d.of$plev[d.of$plev == 1] = 'High'
 
 # d.raw is the raw data with speakerSex and plev as numeric, while d.rawf codes speakerSex and plev as factors
 
@@ -163,37 +179,36 @@ print(head(d.rawf))
 
 #### Box Plots
 
-We will gather an idea of the distribution of behavior scores in relation to hierarchy condition and speaker sex.
+We will gather an idea of the distribution of behavior scores in relation to hierarchy condition and speaker sex, and compare with the original results.
 
 ```{r}
-boxplot(behaviorScore ~ factor(plev, levels = c('Low', 'High')), data = d.af, 
-        xlab="Hierarchy Condition", ylab = "Behavior Score", border = c("red", "blue"),
-        main = "Behavior Score between Hierarchy Condition")
-boxplot(behaviorScore ~ factor(speakerSex, levels = c('Male', 'Female')), data = d.af,
-        xlab="Speaker Sex", ylab = "Behavior Score", border = c("red", "blue"),
-        main = "Behavior Score between Speaker Sex")
+bx1 = ggplot(d.of, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
+  geom_boxplot() +
+  labs(title = 'Original Results', x = 'Hierarchy Condition', y = 'Behavior Score') +
+  scale_fill_discrete(name = 'Speaker Sex')
+bx2 = ggplot(d.af, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
+  geom_boxplot() +
+  labs(title = 'Replication Results', x = 'Hierarchy Condition', y = 'Behavior Score') +
+  scale_fill_discrete(name = 'Speaker Sex')
+
+grid.arrange(bx1, bx2, ncol = 2)
 ```
 
-#### Geometric Plots
+#### Bar Plots
 
-By plotting behavior score against hierarchy condition and sex, we will look for potential main effects and interaction effects that we are interested in testing with our anova.
+We will use bar plots to get an idea of the average behavior scores between hierarchy condition and speaker sex, and compare with the original results.
 
 ```{r}
+bp1 = ggplot(d.of, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
+  geom_bar(position = 'dodge', stat = 'identity') +
+  labs(title = 'Original Results', x = 'Hierarchy Condition', y = 'Behavior Score') +
+  scale_fill_discrete(name = 'Speaker Sex')
+bp2 = ggplot(d.af, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
+  geom_bar(position = 'dodge', stat = 'identity') +
+  labs(title = 'Replication Results', x = 'Hierarchy Condition', y = 'Behavior Score') +
+  scale_fill_discrete(name = 'Speaker Sex')
 
-ggplot(d.a, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
-  geom_smooth(method = lm, se = F) + 
-  geom_point() + 
-  xlab("Hierarchy Condition") + 
-  ylab("Behavior Score") +
-  scale_colour_discrete("Speaker Sex")
-
-ggplot(d.a, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
-  geom_smooth(method = loess.smooth, se = F) + 
-  geom_point() + 
-  xlab("Hierarchy Condition") + 
-  ylab("Behavior Score") +
-  scale_colour_discrete("Speaker Sex")
-
+grid.arrange(bp1, bp2, ncol = 2)
 ```
 
 #### Analysis of Variance (ANOVA) - Fixed Effects Model Analysis
@@ -201,63 +216,43 @@ ggplot(d.a, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c
 Additive Model
 
 ```{r}
-rs1.1 = aov(behaviorScore ~ plev + speakerSex, data = d.raw)
-summary(rs1.1)
+rs1.11 = aov(behaviorScore ~ plev + speakerSex, data = d.af)
+summary(rs1.11)
+rs1.12 = lm(behaviorScore ~ plev + speakerSex, data = d.a)
+summary(rs1.12)
 ```
 
 Interactive Model
 
 ```{r}
-rs1.2 = aov(behaviorScore ~ plev * speakerSex, data = d.raw)
-summary(rs1.2)
+rs1.21 = aov(behaviorScore ~ plev * speakerSex, data = d.af)
+summary(rs1.21)
+
+rs1.22 = lm(behaviorScore ~ plev * speakerSex, data = d.a)
+summary(rs1.21)
 ```
 
 ### 2. Additional Analysis
 
 All the data analysis thus far replicates the analysis that was actually done in the original study. From here on all analysis aims to follow up on the original analysis by analyzing the raw data (unaggreagted, in long form) to look for other effects.
 
-#### Box Plots
+#### Box Plot and Bar Plot
 
-Just like with the aggregated data, we will gather an idea of the distribution of behavior scores in relation to hierarchy condition and speaker sex.
-
-```{r}
-boxplot(behaviorScore ~ factor(plev, levels = c('Low', 'High')), data = d.rawf, 
-        xlab="Hierarchy Condition", ylab = "Behavior Score", border = c("red", "blue"),
-        main = "Behavior Score between Hierarchy Condition")
-boxplot(behaviorScore ~ factor(speakerSex, levels = c('Male', 'Female')), data = d.rawf,
-        xlab="Speaker Sex", ylab = "Behavior Score", border = c("red", "blue"),
-        main = "Behavior Score between Speaker Sex")
-```
-
-#### Geometric Plots
-
-By plotting behavior score against hierarchy condition and sex, we will check to ensure that the effects found using the aggregated data are still present in the raw data.
+Just like with the aggregated data, we will gather an idea of the distribution of and average behavior scores in relation to hierarchy condition and speaker sex.
 
 ```{r}
+ggplot(d.rawf, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
+  geom_boxplot() +
+  labs(title = 'Replication Results (raw)', x = 'Hierarchy Condition', y = 'Behavior Score') +
+  scale_fill_discrete(name = 'Speaker Sex')
 
-ggplot(d.raw, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
-  geom_smooth(method = lm, se = F) + 
-  geom_point() + 
-  xlab("Hierarchy Condition") + 
-  ylab("Behavior Score") +
-  scale_colour_discrete("Speaker Sex")
-
-
-ggplot(d.raw, aes(x = plev, y = behaviorScore, col = factor(speakerSex, levels = c(0, 1), labels=c("Male", "Female")))) +
-  geom_smooth(method = loess, se = F) + 
-  geom_point() + 
-  xlab("Hierarchy Condition") + 
-  ylab("Behavior Score") +
-  scale_colour_discrete("Speaker Sex")
-
+ggplot(d.rawf, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
+  geom_bar(position = 'dodge', stat = 'identity') +
+  labs(title = 'Replication Results (raw)', x = 'Hierarchy Condition', y = 'Behavior Score') +
+  scale_fill_discrete(name = 'Speaker Sex')
 ```
 
 #### ANOVA - Mixed Model Analysis
-
-```{r}
-rs2.1 = aov(behaviorScore ~ (plev * speakerSex) + Error(speakerId/speakerSex) + plev, data = d.raw)
-summary(rs2.1)
-```
 
 Random effect of speakerId
 
