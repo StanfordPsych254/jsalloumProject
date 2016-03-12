@@ -229,7 +229,7 @@ rs1.21 = aov(behaviorScore ~ plev * speakerSex, data = d.af)
 summary(rs1.21)
 
 rs1.22 = lm(behaviorScore ~ plev * speakerSex, data = d.a)
-summary(rs1.21)
+summary(rs1.22)
 ```
 
 ### 2. Additional Analysis

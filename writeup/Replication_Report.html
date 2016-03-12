@@ -61,8 +61,8 @@ img {
 
 
 
-<div id="report-template" class="section level1">
-<h1>REPORT TEMPLATE</h1>
+<div id="replication-report" class="section level1">
+<h1>REPLICATION REPORT</h1>
 <div id="replication-of-the-sound-of-power-conveying-and-detecting-hierarchical-rank-through-voice-by-ko-et-al.-2015-psychological-science" class="section level3">
 <h3>Replication of The Sound of Power: Conveying and Detecting Hierarchical Rank Through Voice by Ko et al. (2015, Psychological Science)</h3>
 <p>Justin Salloum</p>
@@ -339,14 +339,27 @@ summary(rs1.21)</code></pre>
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <pre class="r"><code>rs1.22 = lm(behaviorScore ~ plev * speakerSex, data = d.a)
-summary(rs1.21)</code></pre>
-<pre><code>##                 Df Sum Sq Mean Sq F value   Pr(&gt;F)    
-## plev             1 1.8828  1.8828  25.621 5.97e-05 ***
-## speakerSex       1 0.2242  0.2242   3.050   0.0961 .  
-## plev:speakerSex  1 0.0178  0.0178   0.243   0.6277    
-## Residuals       20 1.4698  0.0735                     
+summary(rs1.22)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = behaviorScore ~ plev * speakerSex, data = d.a)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.41667 -0.12440 -0.00529  0.10741  0.64630 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)       3.8259     0.1212  31.558  &lt; 2e-16 ***
+## plev              0.5828     0.1587   3.672  0.00151 ** 
+## speakerSex       -0.1407     0.1587  -0.887  0.38581    
+## plev:speakerSex  -0.1106     0.2245  -0.493  0.62766    
 ## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2711 on 20 degrees of freedom
+## Multiple R-squared:  0.5911, Adjusted R-squared:  0.5298 
+## F-statistic: 9.638 on 3 and 20 DF,  p-value: 0.000383</code></pre>
 </div>
 </div>
 <div id="additional-analysis" class="section level3">
