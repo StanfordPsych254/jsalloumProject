@@ -41,7 +41,7 @@ All of these sample sizes are reasonable and financially feasible. Note that her
 
 ### Planned Sample
 
-Just like in the original study, 40 undergraduates will be randomly selected for the sample, without restriction on age, gender or demographics. However, as a result of our power analysis, each participant will listen to only 24 speakers (25 was the necessary sample size calculated, but it must be an even number to ensure equal respresentation between speaker sex), as opposed to 60 which the number of speakers in the original research.
+Just like in the original study, 40 undergraduates will be randomly selected for the sample, without restriction on age, gender or demographics. However, as a result of our power analysis, each participant will listen to only 24 speakers (25 was the necessary sample size calculated, but it must be an even number to ensure equal respresentation between speaker sex), as opposed to 60 which is the number of speakers in the original research.
 
 ### Materials
 
@@ -127,52 +127,79 @@ d = read.csv('S2_voice_level_Final.csv')
 
 To prepare the data for analysis, speakerSex and plev are recoded as ['Male', 'Female'] and ['Low-rank', 'High-rank'], respectively. Two sets of analysis will be carried out:
 
-1. Analysis on the data aggregated by average behavior score (d.a and d.af), in order to replicate the analysis done in the original research. To draw comparison to the original results, plots will also be generated for the original data (d.o and d.of).
+1. Analysis on the data aggregated by average behavior score (d.af), in order to replicate the analysis done in the original research. To draw comparison to the original results, plots will also be generated for the original data (d.of).
 2. Analysis on the raw data in long form (d.raw and d.rawf). Mixed model analysis will be conducted to see if there are any random effects of other variables such as speaker id or worker id.
 
 ```{r}
-# d.a is the aggregated data with speakerSex and plev as numeric, while d.af codes speakerSex and plev as factors. The same applies for d.o and d.of, which is the original data
+# d.af is the aggregated replication data with speakerSex and plev coded as factors, d.of is the original aggregated data with speakerSex and plev coded as factors. d.af.summ and d.of.summ represent the summary statistics for d.af and d.of respectively (mean, sem and ci)
 
-d.a = aggregate(d.raw[3:5], list(d.raw$speakerId), mean)
-d.a = rename(d.a, speakerId = Group.1)
-d.af = d.a
+d.af = d.raw %>% 
+  mutate(
+    speakerSex = ifelse(speakerSex == -1, "Male", "Female"),
+    plev = ifelse(plev == -1, "Low", "High")
+  ) %>%
+  group_by(speakerId, speakerSex, plev) %>%
+  summarise(behaviorScore = mean(behaviorScore))
 
-d.a$speakerSex[d.a$speakerSex == -1] = 0
-d.a$plev[d.a$plev == -1] = 0
+d.af.summ = d.raw %>%
+  mutate(
+    speakerSex = ifelse(speakerSex == -1, "Male", "Female"),
+    plev = ifelse(plev == -1, "Low", "High")
+  ) %>%
+  group_by(plev, speakerSex) %>%
+  summarize(
+    mean = mean(behaviorScore),
+    sem =sem(behaviorScore), 
+    ci95 = ci95(behaviorScore)
+  )
 
-d.af$speakerSex[d.af$speakerSex == -1] = 'Male'
-d.af$speakerSex[d.af$speakerSex == 1] = 'Female'
-d.af$plev[d.af$plev == -1] = 'Low'
-d.af$plev[d.af$plev == 1] = 'High'
+d.of = d %>%
+  mutate(
+    speakerSex = ifelse(vsex == -1, "Male", "Female"),
+    plev = ifelse(plev == -1, "Low", "High"),
+    speakerId = voice, 
+    behaviorScore = newpster
+  ) %>%
+  group_by(speakerId, speakerSex, plev) %>%
+  summarise(behaviorScore = mean(behaviorScore))
 
-d.o = select(d, voice, plev, vsex, newpster)
-d.o = rename(d.o, speakerSex = vsex, behaviorScore = newpster)
-d.o = d.o[complete.cases(d.o),]
-d.of = d.o
-
-d.of$speakerSex[d.of$speakerSex == -1] = 'Male'
-d.of$speakerSex[d.of$speakerSex == 1] = 'Female'
-d.of$plev[d.of$plev == -1] = 'Low'
-d.of$plev[d.of$plev == 1] = 'High'
+d.of.summ = d %>%
+  mutate(
+    speakerSex = ifelse(vsex == -1, "Male", "Female"),
+    plev = ifelse(plev == -1, "Low", "High"),
+    speakerId = voice, 
+    behaviorScore = newpster
+  ) %>%
+  group_by(plev, speakerSex) %>%
+  summarize(
+    mean = mean(behaviorScore),
+    sem = sem(behaviorScore), 
+    ci95 = ci95(behaviorScore)
+  )
 
 # d.raw is the raw data with speakerSex and plev as numeric, while d.rawf codes speakerSex and plev as factors
 
-d.rawf = d.raw
+d.rawf = d.raw %>% 
+  mutate(
+    speakerSex = ifelse(speakerSex == -1, "Male", "Female"),
+    plev = ifelse(plev == -1, "Low", "High")
+  )
 
-d.raw$speakerSex[d.raw$speakerSex == -1] = 0
-d.raw$plev[d.raw$plev == -1] = 0
-
-d.rawf$speakerSex[d.rawf$speakerSex == -1] = 'Male'
-d.rawf$speakerSex[d.rawf$speakerSex == 1] = 'Female'
-d.rawf$plev[d.rawf$plev == -1] = 'Low'
-d.rawf$plev[d.rawf$plev == 1] = 'High'
+d.raw = d.raw %>% 
+  mutate(
+    speakerSex = ifelse(speakerSex == -1, 0, 1),
+    plev = ifelse(plev == -1, 0, 1)
+  )
 ```
 
-Now that the data has been prepared, here's a quick look at our data (in both forms) that we will analyze:
+Now that the data has been prepared, here's a quick look at the summary statistics of our data that we will analyze:
 
 ```{r}
-print(head(d.af))
-print(head(d.rawf))
+# Replication data
+print(d.af.summ)
+
+# Original data
+print(d.of.summ)
 ```
 
 ### 1. Replication of Original Analysis
@@ -199,12 +226,14 @@ grid.arrange(bx1, bx2, ncol = 2)
 We will use bar plots to get an idea of the average behavior scores between hierarchy condition and speaker sex, and compare with the original results.
 
 ```{r}
-bp1 = ggplot(d.of, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
+bp1 = ggplot(d.of.summ, aes(x = plev, y = mean, fill = speakerSex)) +
   geom_bar(position = 'dodge', stat = 'identity') +
+  geom_errorbar(aes(ymin = mean - ci95, ymax = mean + ci95), position = 'dodge') +
   labs(title = 'Original Results', x = 'Hierarchy Condition', y = 'Behavior Score') +
   scale_fill_discrete(name = 'Speaker Sex')
-bp2 = ggplot(d.af, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
+bp2 = ggplot(d.af.summ, aes(x = plev, y = mean, fill = speakerSex)) +
   geom_bar(position = 'dodge', stat = 'identity') +
+  geom_errorbar(aes(ymin = mean - ci95, ymax = mean + ci95), position = 'dodge') +
   labs(title = 'Replication Results', x = 'Hierarchy Condition', y = 'Behavior Score') +
   scale_fill_discrete(name = 'Speaker Sex')
 
@@ -216,20 +245,15 @@ grid.arrange(bp1, bp2, ncol = 2)
 Additive Model
 
 ```{r}
-rs1.11 = aov(behaviorScore ~ plev + speakerSex, data = d.af)
-summary(rs1.11)
-rs1.12 = lm(behaviorScore ~ plev + speakerSex, data = d.a)
-summary(rs1.12)
+rs1.1 = aov(behaviorScore ~ plev + speakerSex, data = d.af)
+summary(rs1.1)
 ```
 
 Interactive Model
 
 ```{r}
-rs1.21 = aov(behaviorScore ~ plev * speakerSex, data = d.af)
-summary(rs1.21)
-
-rs1.22 = lm(behaviorScore ~ plev * speakerSex, data = d.a)
-summary(rs1.22)
+rs1.2 = aov(behaviorScore ~ plev * speakerSex, data = d.af)
+summary(rs1.2)
 ```
 
 ### 2. Additional Analysis
