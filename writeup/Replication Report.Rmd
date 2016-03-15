@@ -62,6 +62,7 @@ In the first part of this study, participants listen to 3 randomly chosen sample
 In the second part of this study, participants listen to the 24 recordings one at at time, and "rate the speaker on 12 hierarchy-based behaviors plausible in a negotiation context, using a scale from 1 (not at all) to 7  (very much). Six of these behaviors were associated with high rank, and six with low rank. The order of the speakers and the order of the behaviors were randomized for each perceiver. The low-rank behaviors were reverse-scored, and then scores for all 12 behaviors were averaged to create one composite hierarchical-inference score per perceiver per speaker." The questions are divided up into 3 pages, 4 questions each, for each speaker, and while answering the questions for a given speaker, the participant will hear the recording of that speaker on loop.
 
 ### Analysis Plan
+
 The data will be analyzed with the same approach as in the original research. Effect of condition on hierarchy-based behavioral inferences:
 
 "We examined the extent to which perceivers' hierarchical inferences were consistent with the speakers' hierarchical rank using a 2 (speaker's condition: high rank, low rank) × 2 (speaker's sex: male, female) analysis of variance."
@@ -82,16 +83,19 @@ Loading the libaries needed for data analysis.
 
 ```{r}
 options(warn=-1)
-
 rm(list=ls())
-library(tidyr)
-library(dplyr)
-library(ggplot2)
-library(rjson)
-library(tidyjson)
-library(lme4)
-library(lmerTest)
-library(gridExtra)
+
+loadLibraries = function() {
+  library(tidyr)
+  library(dplyr)
+  library(ggplot2)
+  library(rjson)
+  library(tidyjson)
+  library(lme4)
+  library(lmerTest)
+  library(gridExtra)
+}
+suppressMessages(loadLibraries())
 
 sem <- function(x) {sd(x, na.rm=TRUE) / sqrt(length(x))}
 ci95 <- function(x) {sem(x) * 1.96}
@@ -103,13 +107,13 @@ Data is read from the various json files into a data frame in long form.
 
 ```{r}
 wid = 1
-files = dir(paste0("./","production-results/"), pattern = "*.json")
+files = dir(paste0("./","final-results/"), pattern = "*.json")
 d.raw = data.frame()
 for (f in files) {
-  jf = paste0("./", "production-results/",f)
+  jf = paste0("./", "final-results/",f)
   jd = fromJSON(paste(readLines(jf), collapse=""))
   for (elem in jd$answers$data) {
-    id = data.frame(workerId = as.factor(wid),
+    id = data.frame(workerId = wid,
                     speakerId = elem$speakerId,
                     speakerSex = elem$sex,
                     plev = elem$plev,
@@ -131,24 +135,28 @@ d = read.csv('S2_voice_level_Final.csv')
 To prepare the data for analysis, speakerSex and plev are recoded as ['Male', 'Female'] and ['Low-rank', 'High-rank'], respectively. Two sets of analysis will be carried out:
 
 1. Analysis on the data aggregated by average behavior score (d.af), in order to replicate the analysis done in the original research. To draw comparison to the original results, plots will also be generated for the original data (d.of).
-2. Analysis on the raw data in long form (d.raw and d.rawf). Mixed model analysis will be conducted to see if there are any random effects of other variables such as speaker id or worker id.
+2. Analysis on the raw data in long form (d.rawf). Mixed model analysis will be conducted to see if there are any random effects of other variables such as speaker id or worker id.
 
 ```{r}
-# d.af is the aggregated replication data with speakerSex and plev coded as factors, d.of is the original aggregated data with speakerSex and plev coded as factors. d.af.summ and d.of.summ represent the summary statistics for d.af and d.of respectively (mean, sem and ci)
 
-d.af = d.raw %>% 
+# workerId, speakerId, dspeakerSex and plev are coded as factors in the raw data
+
+d.raw = d.raw %>% 
   mutate(
+    workerId = as.factor(workerId),
+    speakerId = as.factor(speakerId),
     speakerSex = ifelse(speakerSex == -1, "Male", "Female"),
     plev = ifelse(plev == -1, "Low", "High")
-  ) %>%
+  )
+d.rawf = d.raw
+
+# d.af is the aggregated replication data and d.of is the aggregated original data with speakerSex. d.af.summ and d.of.summ represent the summary statistics for d.af and d.of respectively (mean, sem and ci)
+
+d.af = d.raw %>% 
   group_by(speakerId, speakerSex, plev) %>%
   summarise(behaviorScore = mean(behaviorScore))
 
 d.af.summ = d.raw %>%
-  mutate(
-    speakerSex = ifelse(speakerSex == -1, "Male", "Female"),
-    plev = ifelse(plev == -1, "Low", "High")
-  ) %>%
   group_by(plev, speakerSex) %>%
   summarize(
     mean = mean(behaviorScore),
@@ -156,42 +164,21 @@ d.af.summ = d.raw %>%
     ci95 = ci95(behaviorScore)
   )
 
-d.of = d %>%
+d.of = d %>% 
   mutate(
     speakerSex = ifelse(vsex == -1, "Male", "Female"),
     plev = ifelse(plev == -1, "Low", "High"),
     speakerId = voice, 
     behaviorScore = newpster
   ) %>%
-  group_by(speakerId, speakerSex, plev) %>%
-  summarise(behaviorScore = mean(behaviorScore))
+  select(speakerId, speakerSex, plev, behaviorScore)
 
-d.of.summ = d %>%
-  mutate(
-    speakerSex = ifelse(vsex == -1, "Male", "Female"),
-    plev = ifelse(plev == -1, "Low", "High"),
-    speakerId = voice, 
-    behaviorScore = newpster
-  ) %>%
+d.of.summ = d.of %>%
   group_by(plev, speakerSex) %>%
   summarize(
     mean = mean(behaviorScore),
     sem = sem(behaviorScore), 
     ci95 = ci95(behaviorScore)
-  )
-
-# d.raw is the raw data with speakerSex and plev as numeric, while d.rawf codes speakerSex and plev as factors
-
-d.rawf = d.raw %>% 
-  mutate(
-    speakerSex = ifelse(speakerSex == -1, "Male", "Female"),
-    plev = ifelse(plev == -1, "Low", "High")
-  )
-
-d.raw = d.raw %>% 
-  mutate(
-    speakerSex = ifelse(speakerSex == -1, 0, 1),
-    plev = ifelse(plev == -1, 0, 1)
   )
 ```
 
@@ -273,24 +260,24 @@ ggplot(d.rawf, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
   labs(title = 'Replication Results (raw)', x = 'Hierarchy Condition', y = 'Behavior Score') +
   scale_fill_discrete(name = 'Speaker Sex')
 
-ggplot(d.rawf, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
-  geom_bar(position = 'dodge', stat = 'identity') +
-  labs(title = 'Replication Results (raw)', x = 'Hierarchy Condition', y = 'Behavior Score') +
-  scale_fill_discrete(name = 'Speaker Sex')
+#ggplot(d.rawf, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
+#  geom_bar(position = 'dodge', stat = 'identity') +
+#  labs(title = 'Replication Results (raw)', x = 'Hierarchy Condition', y = 'Behavior Score') +
+#  scale_fill_discrete(name = 'Speaker Sex')
 ```
 
-#### ANOVA - Mixed Model Analysis
+#### Mixed Model Analysis
 
 Random effect of speakerId
 
 ```{r}
-rs2.2 = lmer(behaviorScore ~ (plev * speakerSex) + (1 | speakerId), data = d.raw )
+rs2.2 = lmer(behaviorScore ~ (plev * speakerSex) + (1 | speakerId), data = d.rawf )
 summary(rs2.2)
 ```
 
 Random effect of speakerId and workerId
 
 ```{r}
-rs2.3 = lmer(behaviorScore ~ (plev * speakerSex) + (1 | workerId) + (1 | speakerId), data = d.raw )
+rs2.3 = lmer(behaviorScore ~ (plev * speakerSex) + (1 | workerId) + (1 | speakerId), data = d.rawf )
 summary(rs2.3)
 ```
