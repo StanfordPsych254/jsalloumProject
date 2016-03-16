@@ -44,7 +44,7 @@ All of these sample sizes are reasonable and financially feasible. Note that her
 
 ### Planned Sample
 
-Data will be collected from 40 Turkers, without restriction on demographics; this is the same number as the original study, only the original study sampled only undergraduates. However, as a result of our power analysis, each participant will listen to only 24 speakers (25 was the necessary sample size calculated, but it must be an even number to ensure equal respresentation between speaker sex), as opposed to 60 which is the number of speakers in the original research.
+Data will be collected from 40 Turkers, without restriction on demographics; this is the same number as the original study, only the original study sampled only undergraduates. However, as a result of our power analysis, each participant will listen to only 24 speakers (25 was the necessary sample size calculated, but it must be an even number to ensure equal representation between speaker sex), as opposed to 60 which is the number of speakers in the original research.
 
 ### Materials
 
@@ -85,9 +85,9 @@ None
 
 ## Results
 
-### Initializtion and Setup
+### Initialization and Setup
 
-Loading the libaries needed for data analysis.
+Loading the libraries needed for data analysis.
 
 ```{r}
 options(warn=-1)
@@ -282,7 +282,7 @@ Effect size *f* = `r f`, and using G*Power for power calculations the post-hoc p
 
 ### 2. Exploratory Analysis
 
-All the data analysis thus far replicates the analysis that was actually done in the original study. Analysis in this section aims to follow up on the original analysis by analyzing the raw data (unaggreagted, in long form) to look for other effects, particularly random item (speaker) effects and subject (participant) effects.
+All the data analysis thus far replicates the analysis that was actually done in the original study. Analysis in this section aims to follow up on the original analysis by analyzing the raw data (unaggregated, in long form) to look for other effects, particularly random item (speaker) effects and subject (participant) effects.
 
 #### Distribution of Behavior Scores
 
@@ -306,7 +306,7 @@ Interestingly enough, there seems to be much less variance among the behavior sc
 
 #### Mixed Model Analysis
 
-Worker id and speaker id will be modelled as random effects in mixed model analysis to see if either them account for much of the variance of the data.
+Worker id and speaker id will be modeled as random effects in mixed model analysis to see if either them account for much of the variance of the data.
 
 ```{r}
 # Random effect of speakerId
@@ -334,4 +334,4 @@ The effect size also successfully replicates those in the original results. Our 
 
 ### Commentary
 
-The replication overall was successfull and the results were very faithful to the original results. Even though this study was conducted on Mturk instead of in a controlled laboratory environment like in the original research and therefore couldn't directly control all the limitations and address all of the concerns raised by the original authors, the findings were the same.
+The replication overall was successful and the results were very faithful to the original results. Even though this study was conducted on Mturk instead of in a controlled laboratory environment like in the original research and therefore couldn't directly control all the limitations and address all of the concerns raised by the original authors, the findings were the same.

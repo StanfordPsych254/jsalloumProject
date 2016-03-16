@@ -111,7 +111,7 @@ img {
 </div>
 <div id="planned-sample" class="section level3">
 <h3>Planned Sample</h3>
-<p>Data will be collected from 40 Turkers, without restriction on demographics; this is the same number as the original study, only the original study sampled only undergraduates. However, as a result of our power analysis, each participant will listen to only 24 speakers (25 was the necessary sample size calculated, but it must be an even number to ensure equal respresentation between speaker sex), as opposed to 60 which is the number of speakers in the original research.</p>
+<p>Data will be collected from 40 Turkers, without restriction on demographics; this is the same number as the original study, only the original study sampled only undergraduates. However, as a result of our power analysis, each participant will listen to only 24 speakers (25 was the necessary sample size calculated, but it must be an even number to ensure equal representation between speaker sex), as opposed to 60 which is the number of speakers in the original research.</p>
 </div>
 <div id="materials" class="section level3">
 <h3>Materials</h3>
@@ -146,9 +146,9 @@ img {
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
-<div id="initializtion-and-setup" class="section level3">
-<h3>Initializtion and Setup</h3>
-<p>Loading the libaries needed for data analysis.</p>
+<div id="initialization-and-setup" class="section level3">
+<h3>Initialization and Setup</h3>
+<p>Loading the libraries needed for data analysis.</p>
 <pre class="r"><code>options(warn=-1)
 rm(list=ls())
 
@@ -354,7 +354,7 @@ power = 0.945 # computed with G*Power</code></pre>
 </div>
 <div id="exploratory-analysis" class="section level3">
 <h3>2. Exploratory Analysis</h3>
-<p>All the data analysis thus far replicates the analysis that was actually done in the original study. Analysis in this section aims to follow up on the original analysis by analyzing the raw data (unaggreagted, in long form) to look for other effects, particularly random item (speaker) effects and subject (participant) effects.</p>
+<p>All the data analysis thus far replicates the analysis that was actually done in the original study. Analysis in this section aims to follow up on the original analysis by analyzing the raw data (unaggregated, in long form) to look for other effects, particularly random item (speaker) effects and subject (participant) effects.</p>
 <div id="distribution-of-behavior-scores" class="section level4">
 <h4>Distribution of Behavior Scores</h4>
 <p>To get an idea of the distribution of behavior scores in the raw data, i.e. without being summarized and averaged across speaker, we will plot the density of behavior score per hierarchy condition, and also per hierarchy condition per speaker sex.</p>
@@ -374,7 +374,7 @@ grid.arrange(dp1, dp2)</code></pre>
 </div>
 <div id="mixed-model-analysis" class="section level4">
 <h4>Mixed Model Analysis</h4>
-<p>Worker id and speaker id will be modelled as random effects in mixed model analysis to see if either them account for much of the variance of the data.</p>
+<p>Worker id and speaker id will be modeled as random effects in mixed model analysis to see if either them account for much of the variance of the data.</p>
 <pre class="r"><code># Random effect of speakerId
 rs2.1 = lmer(behaviorScore ~ (plev * speakerSex) + (1 | speakerId), data = d.rawf )
 summary(rs2.1)</code></pre>
@@ -492,7 +492,7 @@ summary(rs2.3)</code></pre>
 </div>
 <div id="commentary" class="section level3">
 <h3>Commentary</h3>
-<p>The replication overall was successfull and the results were very faithful to the original results. Even though this study was conducted on Mturk instead of in a controlled laboratory environment like in the original research and therefore couldn’t directly control all the limitations and address all of the concerns raised by the original authors, the findings were the same.</p>
+<p>The replication overall was successful and the results were very faithful to the original results. Even though this study was conducted on Mturk instead of in a controlled laboratory environment like in the original research and therefore couldn’t directly control all the limitations and address all of the concerns raised by the original authors, the findings were the same.</p>
 </div>
 </div>
 </div>
