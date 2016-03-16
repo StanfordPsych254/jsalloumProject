@@ -75,7 +75,15 @@ The biggest difference from the original study is the number of speakers that ea
 
 The authors of the original research expressed concerns about using Mturk as a platform as opposed to a controlled lab environment, for a few reasons. Participants should ideally listen to the speakers with headphones, volume must be the same for participants, audio files are large and participants may experience internet connection issues, participants must not have a hearing disability and they cannot be in a distracting environment. While this replication study acknowledges these limitations and that it is challenging to account for them all, the study's instructions try as best as possible to reduce these.
 
-## Pilot Analysis
+### Actual sample
+
+Data was collected from 40 Turkers, and one participant's data were dropped because one of the participant's scores for one of the speakers came in as 'NA'.
+
+### Differences from Pre-data Collection Methods Plan
+
+None
+
+## Results
 
 ### Initializtion and Setup
 
@@ -94,6 +102,7 @@ loadLibraries = function() {
   library(lme4)
   library(lmerTest)
   library(gridExtra)
+  library(lsr)
 }
 suppressMessages(loadLibraries())
 
@@ -192,7 +201,7 @@ print(d.af.summ)
 print(d.of.summ)
 ```
 
-### 1. Replication of Original Analysis
+### 1. Confirmatory Analysis - Replication of Original Analysis
 
 #### Box Plots
 
@@ -230,54 +239,99 @@ bp2 = ggplot(d.af.summ, aes(x = plev, y = mean, fill = speakerSex)) +
 grid.arrange(bp1, bp2, ncol = 2)
 ```
 
+Our results resemble the original results very closely, with speakers in the high rank condition having higher behavior scores than speakers in the low rank condition. This lends itself to a potential main effect of hierarchy condition on behavior score. Additionally just like in the original results, our plots do not show much of a difference between behavior scores for male and female speakers within each condition.
+
 #### Analysis of Variance (ANOVA) - Fixed Effects Model Analysis
 
-Additive Model
+ANOVA over hierarchy condition and speaker sex is done with both the additive model and the interactive model.
 
 ```{r}
+# Additive model
 rs1.1 = aov(behaviorScore ~ plev + speakerSex, data = d.af)
 summary(rs1.1)
-```
 
-Interactive Model
-
-```{r}
+# Interactive Model
 rs1.2 = aov(behaviorScore ~ plev * speakerSex, data = d.af)
 summary(rs1.2)
+
+# Compare the two models
+anova(rs1.1, rs1.2)
 ```
 
-### 2. Additional Analysis
+The full interactive model fits the data better (Model 1 RSS = 2.22, Model 2 RSS = 2.17), which is what the authors of the original research used in their ANOVA.
 
-All the data analysis thus far replicates the analysis that was actually done in the original study. From here on all analysis aims to follow up on the original analysis by analyzing the raw data (unaggreagted, in long form) to look for other effects.
-
-#### Box Plot and Bar Plot
-
-Just like with the aggregated data, we will gather an idea of the distribution of and average behavior scores in relation to hierarchy condition and speaker sex.
+From the results we observe that only a main effect of hierarchy condition (*F*(1, 20) = 30.932, *p* < .001) on behavior score is present. There isn't a significant main effect of speaker sex on behavior score or a significant interaction between hierarchy condition and speaker sex (both *p*s > .49). Speakers in the high-rank condition had higher behavior scores than speakers in the low-rank condition, regardless of sex. The means and standard deviations will be computed and summarized as follows:
 
 ```{r}
-ggplot(d.rawf, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
-  geom_boxplot() +
-  labs(title = 'Replication Results (raw)', x = 'Hierarchy Condition', y = 'Behavior Score') +
-  scale_fill_discrete(name = 'Speaker Sex')
-
-#ggplot(d.rawf, aes(x = plev, y = behaviorScore, fill = speakerSex)) +
-#  geom_bar(position = 'dodge', stat = 'identity') +
-#  labs(title = 'Replication Results (raw)', x = 'Hierarchy Condition', y = 'Behavior Score') +
-#  scale_fill_discrete(name = 'Speaker Sex')
+d.af %>% 
+  group_by(plev) %>% 
+  summarise(mean = mean(behaviorScore), sd = sd(behaviorScore))
 ```
+
+The effect size will be computed in order to conduct post-hoc power analysis.
+
+```{r}
+print(etaSquared(rs1.2, type = 1))
+etaSq = etaSquared(rs1.2, type = 1)[1,2]
+fSq = etaSq^2 / (1 - etaSq^2)
+f = sqrt(fSq)
+power = 0.945 # computed with G*Power
+```
+
+Effect size *f* = `r f`, and using G*Power for power calculations the post-hoc power is calculated to be `r power`.
+
+### 2. Exploratory Analysis
+
+All the data analysis thus far replicates the analysis that was actually done in the original study. Analysis in this section aims to follow up on the original analysis by analyzing the raw data (unaggreagted, in long form) to look for other effects, particularly random item (speaker) effects and subject (participant) effects.
+
+#### Distribution of Behavior Scores
+
+To get an idea of the distribution of behavior scores in the raw data, i.e. without being summarized and averaged across speaker, we will plot the density of behavior score per hierarchy condition, and also per hierarchy condition per speaker sex.
+
+```{r}
+dp1 = ggplot(d.rawf, aes(x = behaviorScore, fill = plev)) +
+  geom_density(alpha =.5) +
+  labs(title = 'Raw Data Distribution', x = 'Behavior Score') +
+  scale_fill_discrete(name = 'Hierarchy Condition')
+dp2 = ggplot(d.rawf, aes(x = behaviorScore, fill = plev)) +
+  geom_density(alpha =.5) + 
+  facet_grid(~ speakerSex) +
+  labs(x = 'Behavior Score') +
+  scale_fill_discrete(name = 'Hierarchy Condition')
+
+grid.arrange(dp1, dp2)
+```
+
+Interestingly enough, there seems to be much less variance among the behavior scores of speakers in the high-rank condition than among those of the low-rank speakers.
 
 #### Mixed Model Analysis
 
-Random effect of speakerId
+Worker id and speaker id will be modelled as random effects in mixed model analysis to see if either them account for much of the variance of the data.
 
 ```{r}
-rs2.2 = lmer(behaviorScore ~ (plev * speakerSex) + (1 | speakerId), data = d.rawf )
+# Random effect of speakerId
+rs2.1 = lmer(behaviorScore ~ (plev * speakerSex) + (1 | speakerId), data = d.rawf )
+summary(rs2.1)
+
+# Random effect of workerId
+rs2.2 = lmer(behaviorScore ~ (plev * speakerSex) + (1 | workerId), data = d.rawf )
 summary(rs2.2)
-```
 
-Random effect of speakerId and workerId
-
-```{r}
+# Random effect of both speakerId and workerId
 rs2.3 = lmer(behaviorScore ~ (plev * speakerSex) + (1 | workerId) + (1 | speakerId), data = d.rawf )
 summary(rs2.3)
 ```
+
+Neither worker id nor speaker id account for a significant portion of the variance, so the fixed effects model works fine.
+
+## Discussion
+
+### Summary of Replication Attempt
+
+A 2 (speaker’s condition: high rank, low rank) × 2 (speaker’s sex: male, female) ANOVA was conducted to examine the extent to which perceivers' hierarchical inferences were consistent with the speakers' hierarchical rank using. Our results successfully replicated the original results by finding a significant main effect of speaker's hierarchy condition on behavior score (*F*(1, 20) = 30.932, *p* < .001). Neither the main effect of speaker sex nor the interaction between hierarchy condition and speaker sex were significant, which is also consistent with the original results.
+
+The effect size also successfully replicates those in the original results. Our model achieved an effect size of *f* = `r f` and post-hoc power of `r power` (which is almost identical to our proposed power of .95), and the model from the original findings had an effect size of *f* = 0.756.
+
+### Commentary
+
+The replication overall was successfull and the results were very faithful to the original results. Even though this study was conducted on Mturk instead of in a controlled laboratory environment like in the original research and therefore couldn't directly control all the limitations and address all of the concerns raised by the original authors, the findings were the same.
