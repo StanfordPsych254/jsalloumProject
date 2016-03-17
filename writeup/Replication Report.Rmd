@@ -328,7 +328,7 @@ Neither worker id nor speaker id account for a significant portion of the varian
 
 ### Summary of Replication Attempt
 
-A 2 (speaker’s condition: high rank, low rank) × 2 (speaker’s sex: male, female) ANOVA was conducted to examine the extent to which perceivers' hierarchical inferences were consistent with the speakers' hierarchical rank using. Our results successfully replicated the original results by finding a significant main effect of speaker's hierarchy condition on behavior score (*F*(1, 20) = 30.932, *p* < .001). Neither the main effect of speaker sex nor the interaction between hierarchy condition and speaker sex were significant, which is also consistent with the original results.
+A 2 (speaker’s condition: high rank, low rank) × 2 (speaker’s sex: male, female) ANOVA was conducted to examine the extent to which perceivers' hierarchical inferences were consistent with the speakers' hierarchical rank. Our results successfully replicated the original results by finding a significant main effect of speaker's hierarchy condition on behavior score (*F*(1, 20) = 30.932, *p* < .001). Neither the main effect of speaker sex nor the interaction between hierarchy condition and speaker sex were significant, which is also consistent with the original results.
 
 The effect size also successfully replicates those in the original results. Our model achieved an effect size of *f* = `r f` and post-hoc power of `r power` (which is almost identical to our proposed power of .95), and the model from the original findings had an effect size of *f* = 0.756.
 
